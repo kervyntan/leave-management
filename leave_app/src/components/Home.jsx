@@ -1,4 +1,5 @@
 import React from 'react';
+import AddStaff from './AddStaff';
 
 const Home = () => {
     // need to have a home dashboard
@@ -12,7 +13,7 @@ const Home = () => {
     // if person has 0 days of that leave, cannot allow them to submit the form'
     return (
         <div className="container">
-            
+
         </div>
     )
 }
