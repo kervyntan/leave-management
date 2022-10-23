@@ -1,0 +1,22 @@
+.container {
+    max-width : 1080px;
+    margin : 0 auto;
+    padding-inline : 100px; 
+}
+
+.nav {
+    display : flex;
+}
+
+.nav > a:not(:first-child) {
+    margin-left : auto;
+}
+
+.nav > a {
+    color : black;
+    text-decoration : none;
+}
+
+.nav > a:active {
+    color : red;
+}

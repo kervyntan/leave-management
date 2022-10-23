@@ -9,4 +9,12 @@ const Home = () => {
     // Upon submission, that name will be affected in the leave, and the subsequent leave 
     // will be deducted 
     // need to count the number of days between start date and end date of date picker** (for deduction)
+    // if person has 0 days of that leave, cannot allow them to submit the form'
+    return (
+        <div className="container">
+            
+        </div>
+    )
 }
+
+export default Home;
