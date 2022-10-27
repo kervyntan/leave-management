@@ -8,14 +8,23 @@ const AddStaff = () => {
             <label htmlFor='name'> Name: </label>
                 <input id="name" name="name" placeholder="Name: "/>
 
-                <label htmlFor='leave-1'> Leave 1: </label>
-                <input id="leave-1" name="leave-1" placeholder="Reason for Leave: "/>
+                <label htmlFor='annual'> Annual Leave: </label>
+                <input id="annual" name="annual" placeholder="Reason for Leave: "/>
                 
-                <label htmlFor="leave-2"> Leave 2: </label>
-                <input id="leave-2" name="leave-2" type="date"/>
+                <label htmlFor="compassionate"> Compassionate Leave: </label>
+                <input id="compassionate" name="compassionate" type="date"/>
 
-                <label htmlFor="leave-3"> Leave 3: </label>
-                <input id="leave-3" name="leave-3" type="date"/>
+                <label htmlFor="no-pay"> No Pay Leave: </label>
+                <input id="no-pay" name="no-pay" type="date"/>
+
+                <label htmlFor="paternity"> Paternity Leave: </label>
+                <input id="paternity" name="paternity" type="date"/>
+
+                <label htmlFor="maternity"> Maternity Leave: </label>
+                <input id="maternity" name="maternity" type="date"/>
+
+                <label htmlFor="other"> Other Leave: </label>
+                <input id="other" name="other" type="date"/>
                 <Button class="form-btn" />
             </form>
         </div>
