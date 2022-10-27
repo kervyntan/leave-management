@@ -20,3 +20,14 @@
 .nav > a:active {
     color : red;
 }
+
+.add-staff-form {
+    display : flex;
+    flex-direction : column;
+    gap : 1em;
+}
+
+.form-btn {
+    width : fit-content;
+    padding-inline : 20px;
+}

@@ -4,7 +4,7 @@ import Button from "./Button";
 const AddStaff = () => {
     return (
         <div className="container">
-            <form>
+            <form className="add-staff-form">
             <label htmlFor='name'> Name: </label>
                 <input id="name" name="name" placeholder="Name: "/>
 
@@ -25,7 +25,7 @@ const AddStaff = () => {
 
                 <label htmlFor="other"> Other Leave: </label>
                 <input id="other" name="other" type="date"/>
-                <Button class="form-btn" />
+                <Button class="form-btn" text="Add Staff" />
             </form>
         </div>
     )
