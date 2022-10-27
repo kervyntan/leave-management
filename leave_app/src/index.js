@@ -4,15 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA9gd6PH8al1u2NIAuu2lWlTUU51YCHy-k",
-  authDomain: "leave-management-adf7e.firebaseapp.com",
-  projectId: "leave-management-adf7e",
-  storageBucket: "leave-management-adf7e.appspot.com",
-  messagingSenderId: "849220433826",
-  appId: "1:849220433826:web:d8fd072104c7ff09eba4fb"
-};
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
