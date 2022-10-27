@@ -31,3 +31,16 @@
     width : fit-content;
     padding-inline : 20px;
 }
+
+.staff > h1 {
+    font-size : 20px;
+    border-left : 1px solid black;
+    border-right: 1px solid black;
+    padding-inline : 10px;
+}
+
+.staff {
+    display : flex;
+    justify-content: space-between;
+    align-items: center;
+}
