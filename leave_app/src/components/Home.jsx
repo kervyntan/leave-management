@@ -52,6 +52,19 @@ const Home = () => {
     }, [])
     // loop through staffDetails and output the name of each and the
     // different leaves
+    // Make a new <p> under each div whenever there's a new entry
+
+    const loopField = (col) => {
+        let field = document.querySelector("." + col);
+        // console.log(field);
+        staffDetails.forEach((person) => {
+            const val = person[col]; // access using variable string name
+            console.log(val);
+            return <p className={col}> {val} </p>;
+        }) 
+    }
+
+    // loopField("fun");
 
         // setStaffDetails(arr);
 
@@ -61,7 +74,8 @@ const Home = () => {
             <div className="staff">
                 <div className="name">
                 <h1 className="name_heading">Name</h1>
-                <p className="name_para">Name</p>
+                {/* <p className="name_para">Name</p> */}
+                {loopField("name")}
                 </div>
                 <div className="annual_leave">
                 <h1 className="annual_leave_heading">Annual:</h1>
