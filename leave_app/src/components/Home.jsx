@@ -50,6 +50,8 @@ const Home = () => {
             })
         })
     }, [])
+    // loop through staffDetails and output the name of each and the
+    // different leaves
 
         // setStaffDetails(arr);
 
@@ -57,12 +59,30 @@ const Home = () => {
     return (
         <div className="container">
             <div className="staff">
-                <h1 className="name">Name</h1>
-                <h1 className="annual_leave">Annual:</h1>
-                <h1 className="compassionate_leave">Compassionate: </h1>
-                <h1 className="no_pay_leave">No Pay: </h1>
-                <h1 className="paternity_leave">Paternity: </h1>
-                <h1 className="maternity_leave">Maternity: </h1>
+                <div className="name">
+                <h1 className="name_heading">Name</h1>
+                <p className="name_para">Name</p>
+                </div>
+                <div className="annual_leave">
+                <h1 className="annual_leave_heading">Annual:</h1>
+                <p className="annual_leave_para">Name</p>
+                </div>
+                <div className="compassionate_leave">
+                <h1 className="compassionate_leave_heading">Compassionate: </h1>
+                <p className="compassionate_leave_para">Name</p>
+                </div>
+                <div className="no_pay_leave">
+                <h1 className="no_pay_leave_heading">No Pay: </h1>
+                <p className="no_pay_leave_para">Name</p>
+                </div>
+                <div className="paternity_leave">
+                <h1 className="paternity_leave_heading">Paternity: </h1>
+                <p className="paternity_leave_para">Name</p>
+                </div>
+                <div className="maternity_leave">
+                <h1 className="maternity_leave_heading">Maternity: </h1>
+                <p className="maternity_leave_para">Name</p>
+                </div>
             </div>
         </div>
     )
