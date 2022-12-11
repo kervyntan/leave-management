@@ -20,36 +20,36 @@ const Home = () => {
     // will be deducted 
     // need to count the number of days between start date and end date of date picker** (for deduction)
     // if person has 0 days of that leave, cannot allow them to submit the form'
-    const [staffDetails, setStaffDetails] = useState([{
-        name : "",
-        annual_leave : "",
-        compassionate_leave : "",
-        no_pay_leave : "",
-        paternity_leave : "",
-        maternity_leave : ""
-    }]);
-    let arr = [];
+    const [staffDetails, setStaffDetails] = useState([{}]);
     const colRef = collection(db, "staff");
     // setStaffDetails(db.collection('staff').get());
     // console.log(staffDetails);
     useEffect( () => {
-        getDocs(colRef).then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                // setStaffDetails(...staffDetails, 
-                //     doc.data()
-                // )
-                // arr.push(doc.data());
-                setStaffDetails([...staffDetails, {
-                    name : doc.data().name,
-                    annual_leave : doc.data().annual_leave,
-                    compassionate_leave : doc.data().compassionate_leave,
-                    no_pay_leave : doc.data().no_pay_leave,
-                    paternity_leave : doc.data().paternity_leave,
-                    maternity_leave : doc.data().maternity_leave
-                }])
+        setTimeout( () => {
+            getDocs(colRef).then((querySnapshot) => {
+                console.log(querySnapshot.size)
+                querySnapshot.forEach((doc) => {
+                    // setStaffDetails(...staffDetails, 
+                    //     doc.data()
+                    // )
+                    // arr.push(doc.data());
+                    console.log("Hello")
+                    setStaffDetails(staffDetails => [...staffDetails, {
+                        name : doc.data().name,
+                        annual_leave : doc.data().annual_leave,
+                        compassionate_leave : doc.data().compassionate_leave,
+                        no_pay_leave : doc.data().no_pay_leave,
+                        paternity_leave : doc.data().paternity_leave,
+                        maternity_leave : doc.data().maternity_leave
+                    }])
+                })
             })
-        })
+            console.log(staffDetails)
+        }, 500)
     }, [])
+
+    console.log(staffDetails)
+
     // loop through staffDetails and output the name of each and the
     // different leaves
     // Make a new <p> under each div whenever there's a new entry
@@ -57,47 +57,70 @@ const Home = () => {
     const loopField = (col) => {
         let field = document.querySelector("." + col);
         // console.log(field);
-        staffDetails.forEach((person) => {
+        staffDetails.map((person) => {
             const val = person[col]; // access using variable string name
-            console.log(val);
             return <p className={col}> {val} </p>;
         }) 
     }
+
+    const staff = staffDetails.map((person) => {
+        return (
+        <>
+        <tr>
+                <td className="name">
+                <p className="name_para">
+                {person.name}
+                </p>
+                </td>
+                <td className="annual_leave">
+                <p className="annual_leave_para">
+                {person.annual_leave}
+                </p>
+                </td>
+                <td className="compassionate_leave">
+                <p className="compassionate_leave_para">
+                {person.compassionate_leave}   
+                </p>
+                </td>
+                <td className="no_pay_leave">
+                <p className="no_pay_leave_para">
+                {person.no_pay_leave}   
+                </p>
+                </td>
+                <td className="paternity_leave">
+                <p className="paternity_leave_para">
+                {person.paternity_leave}   
+                </p>
+                </td>
+                <td className="maternity_leave">
+                <p className="maternity_leave_para">
+                {person.maternity_leave}      
+                </p>
+                </td>
+         </tr>
+        </>
+        )
+    })
 
     // loopField("fun");
 
         // setStaffDetails(arr);
 
-    console.log(staffDetails);
+    // see how many on leave that day
+
     return (
         <div className="container">
-            <div className="staff">
-                <div className="name">
-                <h1 className="name_heading">Name</h1>
-                {/* <p className="name_para">Name</p> */}
-                {loopField("name")}
-                </div>
-                <div className="annual_leave">
-                <h1 className="annual_leave_heading">Annual:</h1>
-                <p className="annual_leave_para">Name</p>
-                </div>
-                <div className="compassionate_leave">
-                <h1 className="compassionate_leave_heading">Compassionate: </h1>
-                <p className="compassionate_leave_para">Name</p>
-                </div>
-                <div className="no_pay_leave">
-                <h1 className="no_pay_leave_heading">No Pay: </h1>
-                <p className="no_pay_leave_para">Name</p>
-                </div>
-                <div className="paternity_leave">
-                <h1 className="paternity_leave_heading">Paternity: </h1>
-                <p className="paternity_leave_para">Name</p>
-                </div>
-                <div className="maternity_leave">
-                <h1 className="maternity_leave_heading">Maternity: </h1>
-                <p className="maternity_leave_para">Name</p>
-                </div>
-            </div>
+            <table className="staff">
+            <tr>
+                <th> Name </th>
+                <th> Annual </th>
+                <th> Compassionate </th>
+                <th> No Pay </th>
+                <th> Paternity </th>
+                <th> Maternity </th>
+            </tr>
+                {staff}
+            </table>
         </div>
     )
 }

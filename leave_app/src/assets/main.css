@@ -21,7 +21,8 @@
     color : red;
 }
 
-.add-staff-form {
+.add-staff-form,
+.apply-leave-form {
     display : flex;
     flex-direction : column;
     gap : 1em;
@@ -32,10 +33,12 @@
     padding-inline : 20px;
 }
 
+.staff {
+    margin : 0 auto;
+}
+
 .staff h1 {
     font-size : 20px;
-    border-left : 1px solid black;
-    border-right: 1px solid black;
     padding-inline : 10px;
 }
 
@@ -43,8 +46,11 @@
     text-align : center;
 }
 
-.staff {
-    display : flex;
-    justify-content: space-between;
-    align-items: center;
+.staff td,
+.staff th {
+    padding : 10px;
+}
+
+.apply-leave-form input {
+    width : 70%;
 }
