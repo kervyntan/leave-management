@@ -10,11 +10,12 @@ import {
     doc,
     getDocs
   } from "firebase/firestore"
+import {gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES} from '../gapi'
 
 const Home = () => {
     // add a cross that deletes the staff from the list
-
     const [staffDetails, setStaffDetails] = useState([]);
+    const [staffOnLeave, setStaffOnLeave] = useState([]);
     const [loading, setLoading] = useState(true);
     const colRef = collection(db, "staff");
     if (loading) {
@@ -35,6 +36,38 @@ const Home = () => {
                         paternity_leave : doc.data().paternity_leave,
                         maternity_leave : doc.data().maternity_leave
                     }])
+                })
+
+                gapi.load('client:auth2', () => {
+                    console.log("Client loaded")
+                    
+                    // init with credentials
+                    gapi.client.init({
+                        apiKey : API_KEY,
+                        clientId : CLIENT_ID,
+                        discoveryDocs : DISCOVERY_DOC,
+                        scope : SCOPES,
+                        plugin_name : 'leave-management-371308'
+                    })
+        
+                    gapi.client.load('calendar', 'v3', () => {
+                        console.log("added!")
+                    })
+                    // triggers popup to sign in to google
+                    gapi.auth2.getAuthInstance().signIn()
+                    .then( () => {
+                        let request = gapi.client.calendar.events.list({
+                            'calendarId' : 'kervyntan@gmail.com',
+                            'timeMax' : "2022-12-20T00:00:00+08:00",
+                            'maxResults' : 1
+                        })
+        
+                        request.execute((event,result) => {
+                            window.open(event.htmlLink)
+                            console.log(result)
+                        })
+                    })
+        
                 })
             })
             // use this then to catch when data is fetched**
@@ -81,7 +114,9 @@ const Home = () => {
         </>
         )
     })
+    
 
+    const onLeave = null;
     return (
         <>
         {loading && <Loading />}
@@ -97,6 +132,15 @@ const Home = () => {
                 <th> Maternity </th>
             </tr>
                 {staff}
+            </tbody>
+            </table>
+
+            <table className="on-leave">
+            <tbody>
+                <tr>
+                    <th> Name </th>
+                    <th> Duration </th>
+                </tr>
             </tbody>
             </table>
         </div>
