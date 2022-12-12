@@ -3,6 +3,8 @@ import Button from "./Button";
 import {gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES} from '../gapi'
 
 const ApplyLeave = () => {
+    // apply leave, need to minus one from existing leave
+    // apply leave, need to add the type of leave
     const handleAddLeave = (e) => {
         e.preventDefault()
         gapi.load('client:auth2', () => {
