@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,700;1,500&display=swap');
+:root {
+    --clr-primary : #8eb1d7;
+}
+
+* {
+    box-sizing: border-box;
+    font-family : Open Sans;
+}
+
 .container {
     max-width : 1080px;
     margin : 0 auto;
@@ -6,15 +16,19 @@
 
 .nav {
     display : flex;
+    background : var(--clr-primary);
+    padding : 10px;
+    justify-content: space-around;
 }
 
-.nav > a:not(:first-child) {
+/* .nav > a:not(:first-child) {
     margin-left : auto;
-}
+} */
 
 .nav > a {
-    color : black;
+    color : #000;
     text-decoration : none;
+    font-weight : 700;
 }
 
 .nav > a:active {
@@ -26,6 +40,10 @@
     display : flex;
     flex-direction : column;
     gap : 1em;
+    background : #EFEFEF;
+    box-shadow: 0px 0px 2px 2px #000;
+    margin-block : 20px;
+    padding : 20px;
 }
 
 .form-btn {
@@ -54,3 +72,7 @@
 .apply-leave-form input {
     width : 70%;
 }
+/* 
+input:focus {
+    border : none;
+} */

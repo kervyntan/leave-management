@@ -61,7 +61,7 @@ const AddStaff = () => {
                 <input id="maternity" name="maternity" type="text" placeholder="Number of Days: " onChange={changeHandler}/>
 
                 <label htmlFor="other"> Other Leave: </label>
-                {/* <input id="other" name="other" type="date"/> */}
+                <input id="other" name="other" type="text" placeholder="Number of Days: " onChange={changeHandler}/>
                 <Button class="form-btn" text="Add Staff" onClick={addStaffHandler} />
             </form>
         </div>

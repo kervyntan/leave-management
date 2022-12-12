@@ -22,7 +22,7 @@ const Home = () => {
     // will be deducted 
     // need to count the number of days between start date and end date of date picker** (for deduction)
     // if person has 0 days of that leave, cannot allow them to submit the form'
-    const [staffDetails, setStaffDetails] = useState([{}]);
+    const [staffDetails, setStaffDetails] = useState([]);
     const colRef = collection(db, "staff");
     // setStaffDetails(db.collection('staff').get());
     // console.log(staffDetails);

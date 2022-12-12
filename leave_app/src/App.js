@@ -8,8 +8,8 @@ import ApplyLeave from "./components/ApplyLeave";
 function App() {
   return (
     <BrowserRouter>
+    <Navbar />
     <div className="container">
-      <Navbar />
       <Routes>
         <Route index element={<Home />} />
         <Route path="/addstaff" element={<AddStaff />} />
