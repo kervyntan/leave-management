@@ -52,7 +52,7 @@
 }
 
 .staff {
-    margin : 0 auto;
+    margin : 20px auto;
 }
 
 .staff h1 {
@@ -67,6 +67,7 @@
 .staff td,
 .staff th {
     padding : 10px;
+    border : 1px solid #000;
 }
 
 .apply-leave-form input {

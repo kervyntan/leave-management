@@ -1,15 +1,23 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import Button from "./Button";
 import {gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES} from '../gapi'
 
 const ApplyLeave = () => {
     // apply leave, need to minus one from existing leave
     // apply leave, need to add the type of leave
+    const startDate = useRef("startDate")
+    const endDate = useRef("endDate")
+    const reason = useRef("reason")
+    const name = useRef("name")
+    const leave = useRef("leave")
+
     const handleAddLeave = (e) => {
         e.preventDefault()
+        // load the auth
         gapi.load('client:auth2', () => {
             console.log("Client loaded")
             
+            // init with credentials
             gapi.client.init({
                 apiKey : API_KEY,
                 clientId : CLIENT_ID,
@@ -21,27 +29,22 @@ const ApplyLeave = () => {
             gapi.client.load('calendar', 'v3', () => {
                 console.log("added!")
             })
-
+            // triggers popup to sign in to google
             gapi.auth2.getAuthInstance().signIn()
             .then( () => {
                 let event = {
-                    'summary': 'Google I/O 2015',
-                    'location': '800 Howard St., San Francisco, CA 94103',
-                    'description': 'A chance to hear more about Google\'s developer products.',
+                    'summary': `${name.current.value} - ${reason.current.value}`,
+                    'description': `${leave.current.value}`,
                     'start': {
-                      'dateTime': '2022-12-12T09:00:00-07:00',
-                      'timeZone': 'America/Los_Angeles'
+                        'dateTime' : `${startDate.current.value}T00:00:00+08:00`,
+                        'timeZone' : 'Asia/Singapore'
                     },
                     'end': {
-                      'dateTime': '2022-12-13T17:00:00-07:00',
-                      'timeZone': 'America/Los_Angeles'
+                      'dateTime': `${endDate.current.value}T00:00:00+08:00`,
+                      'timeZone': 'Asia/Singapore'
                     },
                     'recurrence': [
                       'RRULE:FREQ=DAILY;COUNT=2'
-                    ],
-                    'attendees': [
-                      {'email': 'lpage@example.com'},
-                      {'email': 'sbrin@example.com'}
                     ],
                     'reminders': {
                       'useDefault': false,
@@ -67,16 +70,26 @@ const ApplyLeave = () => {
         <div className="container">
         <form className="apply-leave-form">
         <label htmlFor='name'> Name: </label>
-            <input id="name" name="name" placeholder="Name: "/>
+            <input ref={name} id="name" name="name" placeholder="Name: "/>
 
             <label htmlFor='reason'> Reason for Leave: </label>
-            <input id="reason" name="reason" placeholder="Reason for Leave: "/>
+            <input ref={reason} id="reason" name="reason" placeholder="Reason for Leave: "/>
+
+            <label htmlFor='type'> Type of Leave: </label>
+            <select ref={leave} id="type" name="type" placeholder="Type of Leave: ">
+            <option value="Annual"> Annual </option>
+            <option value="Compassionate"> Compassionate </option>
+            <option value="No_Pay"> No Pay </option>
+            <option value="Paternity"> Paternity </option>
+            <option value="Maternity"> Maternity </option>
+            </select>
+
             
             <label htmlFor="start"> Start Date </label>
-            <input id="start" name="duration" type="date"/>
+            <input ref={startDate} id="start" name="duration" type="date" />
 
             <label htmlFor="end"> End Date </label>
-            <input id="end" name="duration" type="date"/>
+            <input ref={endDate} id="end" name="duration" type="date"/>
             <Button onClick={handleAddLeave} class="form-btn" text="Apply Leave" />
         </form>
     </div>
