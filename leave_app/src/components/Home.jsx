@@ -11,6 +11,8 @@ import {
   } from "firebase/firestore"
 
 const Home = () => {
+    // add a cross that deletes the staff from the list
+
     // need to have a home dashboard
     // form available to add the person's leaves
     // Form -> fields for each type of leave, name of the person
