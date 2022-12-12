@@ -3,6 +3,7 @@ import Button from "./Button";
 import {gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES} from '../gapi'
 
 const ApplyLeave = () => {
+    // separate the app into client and server
     // apply leave, need to minus one from existing leave
     // apply leave, need to add the type of leave
     const startDate = useRef("startDate")

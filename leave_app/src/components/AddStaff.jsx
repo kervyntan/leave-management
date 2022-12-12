@@ -8,7 +8,6 @@ import {
     updateDoc,
     doc
   } from "firebase/firestore"
-  
 
 const AddStaff = () => {
     const [formValues, setFormValues] = useState({
@@ -38,6 +37,7 @@ const AddStaff = () => {
            ...formValues, [e.target.name] : e.target.value
         })
     }
+    
 
     return (
         <div className="container">

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import AddStaff from './AddStaff';
+import Loading from './Loading';
 import {db} from "../firebase";
 import {
     collection,
@@ -13,29 +14,19 @@ import {
 const Home = () => {
     // add a cross that deletes the staff from the list
 
-    // need to have a home dashboard
-    // form available to add the person's leaves
-    // Form -> fields for each type of leave, name of the person
-    // Another form that will allow for application of leave
-    // 2nd form -> how many days leave (need a date picker), reason for leave, name of the person
-    // Upon submission, that name will be affected in the leave, and the subsequent leave 
-    // will be deducted 
-    // need to count the number of days between start date and end date of date picker** (for deduction)
-    // if person has 0 days of that leave, cannot allow them to submit the form'
     const [staffDetails, setStaffDetails] = useState([]);
+    const [loading, setLoading] = useState(true);
     const colRef = collection(db, "staff");
-    // setStaffDetails(db.collection('staff').get());
-    // console.log(staffDetails);
+    if (loading) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "unset";
+      }
     useEffect( () => {
         setTimeout( () => {
             getDocs(colRef).then((querySnapshot) => {
                 console.log(querySnapshot.size)
                 querySnapshot.forEach((doc) => {
-                    // setStaffDetails(...staffDetails, 
-                    //     doc.data()
-                    // )
-                    // arr.push(doc.data());
-                    console.log("Hello")
                     setStaffDetails(staffDetails => [...staffDetails, {
                         name : doc.data().name,
                         annual_leave : doc.data().annual_leave,
@@ -46,29 +37,16 @@ const Home = () => {
                     }])
                 })
             })
+            // use this then to catch when data is fetched**
+            .then( () => setLoading(false))
             console.log(staffDetails)
         }, 500)
     }, [])
 
-    console.log(staffDetails)
-
-    // loop through staffDetails and output the name of each and the
-    // different leaves
-    // Make a new <p> under each div whenever there's a new entry
-
-    const loopField = (col) => {
-        let field = document.querySelector("." + col);
-        // console.log(field);
-        staffDetails.map((person) => {
-            const val = person[col]; // access using variable string name
-            return <p className={col}> {val} </p>;
-        }) 
-    }
-
     const staff = staffDetails.map((person) => {
         return (
         <>
-        <tr>
+        <tr key={Math.random}>
                 <td className="name">
                 <p className="name_para">
                 {person.name}
@@ -104,15 +82,12 @@ const Home = () => {
         )
     })
 
-    // loopField("fun");
-
-        // setStaffDetails(arr);
-
-    // see how many on leave that day
-
     return (
-        <div className="container">
+        <>
+        {loading && <Loading />}
+        <div className="container">    
             <table className="staff">
+            <tbody>
             <tr>
                 <th> Name </th>
                 <th> Annual </th>
@@ -122,8 +97,10 @@ const Home = () => {
                 <th> Maternity </th>
             </tr>
                 {staff}
+            </tbody>
             </table>
         </div>
+        </>
     )
 }
 
