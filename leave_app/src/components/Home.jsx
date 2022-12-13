@@ -25,6 +25,7 @@ const Home = () => {
         document.body.style.overflow = "unset";
       }
 
+    // store the values of the fetched data into localStorage
     useEffect( () => {
         setTimeout( () => {
             getDocs(colRef)
@@ -65,7 +66,7 @@ const Home = () => {
                         })
         
                         request.execute((event,res) => {
-                            window.open(event.htmlLink)
+                            // window.open(event.htmlLink)
                             // must parse the JSON response otherwise cannot access array
                             setResult(JSON.parse(res))
                         })
@@ -79,6 +80,7 @@ const Home = () => {
             })
         }, 500)
     }, [])
+    // need to only fetch those who are on leave from today onwards
     const onLeave = result[0].result.items.map((person) => {
             return (
                 <>
