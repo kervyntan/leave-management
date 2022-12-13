@@ -7,6 +7,8 @@ import {
   serverTimestamp,
   updateDoc,
   doc,
+  setDoc,
+  getDoc
 } from "firebase/firestore";
 
 const AddStaff = () => {
@@ -20,9 +22,10 @@ const AddStaff = () => {
   });
   const colRef = collection(db, "staff");
 
-  const addStaffHandler = (e) => {
+  const handleAddStaff = (e) => {
     e.preventDefault();
-    addDoc(colRef, {
+    // console.log(getDoc(colRef).id);
+    setDoc(doc(db, "staff", `test`), {
       name: formValues.name,
       annual_leave: formValues.annual,
       compassionate_leave: formValues.compassionate,
@@ -38,10 +41,6 @@ const AddStaff = () => {
       [e.target.name]: e.target.value,
     });
   };
-
-  const test = [{"id":"gapiRpc","result":{"kind":"calendar#events","etag":"\"p33sct1fgqrpvm0g\"","summary":"kervyntan@gmail.com","updated":"2022-12-12T08:38:38.043Z","timeZone":"Asia/Singapore","accessRole":"owner","defaultReminders":[{"method":"popup","minutes":30}],"nextPageToken":"CkgKOjY4cmo2b2IyYzRyNjRiYjJjZ3AzMGI5a2Nvb2ppYmIyY29vM2FiYjQ3MHIzZXAzNTZrcm1hY3BtY2sYASCAgMCKnKehnxcaDwgAEgAY-M6F8Nbz-wIgASIHCAIQsNqwLA==","items":[{"kind":"calendar#event","etag":"\"3194661320746000\"","id":"68rj6ob2c4r64bb2cgp30b9kcoojibb2coo3abb470r3ep356krmacpmck","status":"confirmed","htmlLink":"https://www.google.com/calendar/event?eid=NjhyajZvYjJjNHI2NGJiMmNncDMwYjlrY29vamliYjJjb28zYWJiNDcwcjNlcDM1NmtybWFjcG1jayBrZXJ2eW50YW5AbQ","created":"2020-08-13T14:57:40.000Z","updated":"2020-08-13T14:57:40.373Z","summary":"No Walk-ins for counter services.  By Appointment only. (ComfortDelGro Driving Centre)","description":"View/Change Appointment:\nhttps://app.acuityscheduling.com/schedule.php?owner=20159891&id%5B%5D=8f1a249a189c1e73ac04939bb1bf23b1&action=appt\n\n(created by Acuity Scheduling)\nAcuityID=422431859\nGoogle","creator":{"email":"kervyntan@gmail.com","self":true},"organizer":{"email":"kervyntan@gmail.com","self":true},"start":{"dateTime":"2020-09-06T09:30:00+08:00","timeZone":"Asia/Singapore"},"end":{"dateTime":"2020-09-06T10:00:00+08:00","timeZone":"Asia/Singapore"},"iCalUID":"68rj6ob2c4r64bb2cgp30b9kcoojibb2coo3abb470r3ep356krmacpmck@google.com","sequence":0,"reminders":{"useDefault":true},"eventType":"default"}]}}]
-
-  console.log(test[0].result.items[0].summary)
 
   return (
     <div className="container">
@@ -106,7 +105,7 @@ const AddStaff = () => {
           placeholder="Number of Days: "
           onChange={changeHandler}
         />
-        <Button class="form-btn" text="Add Staff" onClick={addStaffHandler} />
+        <Button class="form-btn" text="Add Staff" onClick={handleAddStaff} />
       </form>
     </div>
   );

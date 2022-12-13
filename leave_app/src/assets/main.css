@@ -82,6 +82,10 @@ input:focus {
     border : none;
 } */
 
+.delete-staff-btn {
+  margin-block : 20px;
+}
+
 /* Loading */
 .loading {
     position: fixed;
