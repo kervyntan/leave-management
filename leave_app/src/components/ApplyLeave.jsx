@@ -60,8 +60,9 @@ const ApplyLeave = () => {
                     'resource' : event,
                 })
 
-                request.execute(event => {
+                request.execute((event, res) => {
                     window.open(event.htmlLink)
+                    console.log(res)
                 })
             })
 

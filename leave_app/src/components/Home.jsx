@@ -16,6 +16,7 @@ const Home = () => {
     // add a cross that deletes the staff from the list
     const [staffDetails, setStaffDetails] = useState([]);
     const [staffOnLeave, setStaffOnLeave] = useState([]);
+    const [result, setResult] = useState([{ "result" : { "items" : []}}]);   
     const [loading, setLoading] = useState(true);
     const colRef = collection(db, "staff");
     if (loading) {
@@ -23,10 +24,12 @@ const Home = () => {
       } else {
         document.body.style.overflow = "unset";
       }
+
     useEffect( () => {
         setTimeout( () => {
-            getDocs(colRef).then((querySnapshot) => {
-                console.log(querySnapshot.size)
+            getDocs(colRef)
+            .then((querySnapshot) => {
+                // console.log(querySnapshot.size)
                 querySnapshot.forEach((doc) => {
                     setStaffDetails(staffDetails => [...staffDetails, {
                         name : doc.data().name,
@@ -39,7 +42,6 @@ const Home = () => {
                 })
 
                 gapi.load('client:auth2', () => {
-                    console.log("Client loaded")
                     
                     // init with credentials
                     gapi.client.init({
@@ -51,7 +53,7 @@ const Home = () => {
                     })
         
                     gapi.client.load('calendar', 'v3', () => {
-                        console.log("added!")
+                        // console.log("added!")
                     })
                     // triggers popup to sign in to google
                     gapi.auth2.getAuthInstance().signIn()
@@ -59,22 +61,42 @@ const Home = () => {
                         let request = gapi.client.calendar.events.list({
                             'calendarId' : 'kervyntan@gmail.com',
                             'timeMax' : "2022-12-20T00:00:00+08:00",
-                            'maxResults' : 1
+                            'maxResults' : 2
                         })
         
-                        request.execute((event,result) => {
+                        request.execute((event,res) => {
                             window.open(event.htmlLink)
-                            console.log(result)
+                            // must parse the JSON response otherwise cannot access array
+                            setResult(JSON.parse(res))
                         })
                     })
         
                 })
             })
             // use this then to catch when data is fetched**
-            .then( () => setLoading(false))
-            console.log(staffDetails)
+            .then( () => { 
+                setLoading(false)
+            })
         }, 500)
     }, [])
+    const onLeave = result[0].result.items.map((person) => {
+            return (
+                <>
+                    <tr key={Math.random}>
+                        <td className="name">
+                            <p className="name_para">
+                                {person.summary}
+                            </p>
+                        </td>
+                        <td className="name">
+                            <p className="name_para">
+                                {person.start.dateTime.split("T")[0]} - {person.end.dateTime.split("T")[0]}
+                            </p>
+                        </td>
+                    </tr>
+                </>
+            )
+        })
 
     const staff = staffDetails.map((person) => {
         return (
@@ -114,9 +136,6 @@ const Home = () => {
         </>
         )
     })
-    
-
-    const onLeave = null;
     return (
         <>
         {loading && <Loading />}
@@ -141,6 +160,7 @@ const Home = () => {
                     <th> Name </th>
                     <th> Duration </th>
                 </tr>
+                {onLeave}
             </tbody>
             </table>
         </div>
