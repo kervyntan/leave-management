@@ -128,6 +128,7 @@ const ApplyLeave = () => {
     <div className="container">
       {loading && <Loading />}
       <p> Need to double check duration of leave value on line 110</p>
+      <p> End Date must be greater than Start Date</p>
       <form className="apply-leave-form">
         {staffList.length === 0 && (
           <>
