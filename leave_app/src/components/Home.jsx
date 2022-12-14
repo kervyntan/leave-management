@@ -2,23 +2,22 @@ import React, { useEffect, useState } from "react";
 import AddStaff from "./AddStaff";
 import Loading from "./Loading";
 import Button from "./Button";
+import close from "../assets/close_icon.png"
 import { Modal } from "@mantine/core";
 import { db } from "../firebase";
 import {
   collection,
-  addDoc,
-  serverTimestamp,
-  updateDoc,
-  doc,
+  deleteDoc,
   getDocs,
+  doc
 } from "firebase/firestore";
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const Home = () => {
   // add a cross that deletes the staff from the list
-  const [opened, setOpened] = useState(true);
+  const [opened, setOpened] = useState(false);
   const [staffDetails, setStaffDetails] = useState([]);
-  const [staffOnLeave, setStaffOnLeave] = useState([]);
+  const [staffToDelete, setStaffToDelete] = useState();
   const [result, setResult] = useState([{ result: { items: [] } }]);
   const [loading, setLoading] = useState(true);
   const colRef = collection(db, "staff");
@@ -87,6 +86,12 @@ const Home = () => {
         });
     }, 500);
   }, []);
+  const handler = (e) => {
+    setOpened(true);
+    // console.log(e.target.className.split("+")[0])
+    setStaffToDelete(e.target.className.split("+")[0]);
+    // console.log(staffToDelete)
+  }
   // need to only fetch those who are on leave from today onwards
   const onLeave = result[0].result.items.map((person) => {
     return (
@@ -130,16 +135,23 @@ const Home = () => {
           <td className="maternity_leave">
             <p className="maternity_leave_para">{person.maternity_leave}</p>
           </td>
+          <td className="delete">
+            <img src={close} className={`${person.name}+ close`} onClick={handler} alt="Delete Staff" />
+          </td>
         </tr>
       </>
     );
   });
 
-  console.log(numberOfStaff)
-  console.log(staffDetails)
+  // console.log(numberOfStaff)
+  // console.log(staffDetails)
 
   const handleDeleteStaff = () => {
-    
+    deleteDoc(doc(db, "staff", staffToDelete))
+    .then( () => {
+      console.log("Staff Deleted.")
+      window.location.reload();
+    })
   }
 
   return (
