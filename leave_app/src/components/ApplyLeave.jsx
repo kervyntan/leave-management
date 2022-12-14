@@ -2,13 +2,10 @@ import React, { useRef, useEffect, useState } from "react";
 import Button from "./Button";
 import Loading from "./Loading";
 import { db } from "../firebase";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, getDocs, query, updateDoc, doc, getDoc } from "firebase/firestore";
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const ApplyLeave = () => {
-  // separate the app into client and server
-  // apply leave, need to minus one from existing leave
-  // apply leave, need to add the type of leave
   const startDate = useRef("startDate");
   const endDate = useRef("endDate");
   const reason = useRef("reason");
@@ -66,10 +63,9 @@ const ApplyLeave = () => {
               timeZone: "Asia/Singapore",
             },
             end: {
-              dateTime: `${endDate.current.value}T00:00:00+08:00`,
+              dateTime: `${endDate.current.value}T23:59:59+08:00`,
               timeZone: "Asia/Singapore",
             },
-            recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
             reminders: {
               useDefault: false,
               overrides: [
@@ -87,7 +83,40 @@ const ApplyLeave = () => {
             window.open(event.htmlLink);
             console.log(res);
           });
-        });
+        })
+        .then( () => {
+            // Deducts the leave from the specific staff
+
+            // staff name
+            const staffName = name.current.value;
+
+            // the type of leave they took
+            const leaveType = (leave.current.value +"_leave").toLowerCase();
+            const docRef = doc(db, "staff", staffName);
+
+            // Calculation of leave duration
+            let start = new Date(startDate.current.value);
+            let end = new Date(endDate.current.value);
+            let diff_in_time = end.getTime() - start.getTime();
+            let diff_in_days = diff_in_time / (1000 * 3600 * 24);
+
+            // fetch the specific document about the staff
+            getDoc(docRef)
+            .then( (item) => {
+                // Find the current amount of leave the person has
+                let currentLeave = parseInt(item.data()[leaveType]);
+                // Store leave to be changed in new object
+                const docData = {}
+                docData[leaveType] = currentLeave - diff_in_days + 1;
+                updateDoc(docRef, docData)
+                .then ( () => {
+                    console.log("Successful update of document.")
+                })
+                .catch ( (error) => {
+                    console.log(`Failed to update document. ${error}`)
+                })
+            })
+        })
     });
   };
 
@@ -98,12 +127,7 @@ const ApplyLeave = () => {
   return (
     <div className="container">
       {loading && <Loading />}
-      <p> Need to deduct leave from the specific person</p>
-      <p>
-        {" "}
-        Change the name to fetch the options from the db for the names (All the
-        IDs of the documents) If no options, then offer the input method instead{" "}
-      </p>
+      <p> Need to double check duration of leave value on line 110</p>
       <form className="apply-leave-form">
         {staffList.length === 0 && (
           <>
@@ -115,7 +139,7 @@ const ApplyLeave = () => {
         {staffList.length > 0 && (
           <>
             <label htmlFor="name"> Name: </label>
-            <select id="name" name="name" placeholder="Name of Staff">
+            <select ref={name} id="name" name="name" placeholder="Name of Staff">
               {staffNames}
             </select>
           </>

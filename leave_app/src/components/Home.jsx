@@ -20,7 +20,6 @@ const Home = () => {
   const [result, setResult] = useState([{ result: { items: [] } }]);
   const [loading, setLoading] = useState(true);
   const colRef = collection(db, "staff");
-  const numberOfStaff = staffDetails.length;
   if (loading) {
     document.body.style.overflow = "hidden";
   } else {
