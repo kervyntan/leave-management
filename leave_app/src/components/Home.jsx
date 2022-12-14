@@ -11,7 +11,6 @@ import {
   getDocs,
   doc
 } from "firebase/firestore";
-import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const Home = () => {
   // add a cross that deletes the staff from the list
@@ -161,7 +160,7 @@ const Home = () => {
         centered
         opened={opened}
         onClose={() => setOpened(false)}
-        title="Introduce Yourself!"
+        title="Delete Staff"
       >
         Are you sure you want to delete this staff?
         <br />

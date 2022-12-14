@@ -8,7 +8,6 @@ import {
 } from "firebase/firestore";
 
 const AddStaff = () => {
-  // need addstaff Modal
   const [formValues, setFormValues] = useState({
     name: "",
     annual: "",
@@ -17,9 +16,7 @@ const AddStaff = () => {
     paternity: "",
     maternity: "",
   });
-  const [latestDocID, setLatestDocID] = useState(0);
-  const colRef = collection(db, "staff");
-  
+
   const handleAddStaff = (e) => {
     e.preventDefault();
       // ID is the name of staff
@@ -44,6 +41,7 @@ const AddStaff = () => {
 
   return (
     <div className="container">
+      <p> Add staff Modal</p>
       <form className="add-staff-form">
         <label htmlFor="name"> Name: </label>
         <input
@@ -51,6 +49,7 @@ const AddStaff = () => {
           name="name"
           placeholder="Name: "
           onChange={changeHandler}
+          required
         />
 
         <label htmlFor="annual"> Annual Leave: </label>
@@ -59,6 +58,7 @@ const AddStaff = () => {
           name="annual"
           placeholder="Number of Days: "
           onChange={changeHandler}
+          required
         />
 
         <label htmlFor="compassionate"> Compassionate Leave: </label>
@@ -68,6 +68,7 @@ const AddStaff = () => {
           placeholder="Number of Days: "
           type="text"
           onChange={changeHandler}
+          required
         />
 
         <label htmlFor="no_pay"> No Pay Leave: </label>
@@ -77,6 +78,7 @@ const AddStaff = () => {
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
+          required
         />
 
         <label htmlFor="paternity"> Paternity Leave: </label>
@@ -86,6 +88,7 @@ const AddStaff = () => {
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
+          required
         />
 
         <label htmlFor="maternity"> Maternity Leave: </label>
@@ -95,6 +98,7 @@ const AddStaff = () => {
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
+          required
         />
 
         <label htmlFor="other"> Other Leave: </label>
@@ -104,6 +108,7 @@ const AddStaff = () => {
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
+          required
         />
         <Button class="form-btn" text="Add Staff" onClick={handleAddStaff} />
       </form>
