@@ -8,10 +8,6 @@ import {
   updateDoc,
   doc,
   setDoc,
-  getDocs,
-  query,
-  orderBy,
-  limit
 } from "firebase/firestore";
 
 const AddStaff = () => {
@@ -28,18 +24,9 @@ const AddStaff = () => {
   
   const handleAddStaff = (e) => {
     e.preventDefault();
-    // console.log(getDoc(colRef).id);
-    getDocs(query(collection(db, "staff"), orderBy("name"), limit(1)))
-    .then( (items) => {
-      items.forEach((doc) => {
-        setLatestDocID(doc.id)
-        console.log(doc.id)
-        console.log(latestDocID)
-      })
-    })
-    .then( () => {
-      console.log(latestDocID)
-      setDoc(doc(db, "staff", `${latestDocID + 1}`), {
+      // ID is the name of staff
+      // ${formValues.name}
+      setDoc(doc(db, "staff", `${formValues.name}`), {
         name: formValues.name,
         annual_leave: formValues.annual,
         compassionate_leave: formValues.compassionate,
@@ -47,7 +34,6 @@ const AddStaff = () => {
         paternity_leave: formValues.paternity,
         maternity_leave: formValues.maternity,
       });
-    })
 
   };
 

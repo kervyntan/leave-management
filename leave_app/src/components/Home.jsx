@@ -139,7 +139,7 @@ const Home = () => {
   console.log(staffDetails)
 
   const handleDeleteStaff = () => {
-
+    
   }
 
   return (
