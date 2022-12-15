@@ -75,7 +75,7 @@ const ApplyLeave = () => {
             },
           };
           let request = gapi.client.calendar.events.insert({
-            calendarId: "kervyntan@gmail.com",
+            calendarId: "primary",
             resource: event,
           });
 
