@@ -124,6 +124,8 @@ const ApplyLeave = () => {
     return <option value={staff}> {staff} </option>;
   });
 
+  console.log(staffNames)
+
   return (
     <div className="container">
       {loading && <Loading />}
@@ -140,7 +142,7 @@ const ApplyLeave = () => {
         {staffList.length > 0 && (
           <>
             <label htmlFor="name"> Name: </label>
-            <select ref={name} id="name" name="name" placeholder="Name of Staff">
+            <select ref={name} id="name" name="name">
               {staffNames}
             </select>
           </>
