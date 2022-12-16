@@ -8,6 +8,16 @@
     font-family : Open Sans;
 }
 
+body,
+h1,
+h2,
+h3,
+p,
+blockquote {
+  margin : 0;
+  padding : 0;
+}
+
 .close {
   cursor : pointer;
   width : 20px;

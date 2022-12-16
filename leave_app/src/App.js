@@ -4,6 +4,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import AddStaff from "./components/AddStaff";
 import ApplyLeave from "./components/ApplyLeave";
+import CheckStaffLeave from "./components/CheckStaffLeave";
 
 function App() {
   
@@ -24,6 +25,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="/addstaff" element={<AddStaff />} />
         <Route path="/applyleave" element={<ApplyLeave />} />
+        <Route path="/checkleavestaff" element={<CheckStaffLeave />} />
       </Routes>
     </div>
     </BrowserRouter>
