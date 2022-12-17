@@ -76,8 +76,9 @@ const ApplyLeave = () => {
         .getAuthInstance()
         .signIn()
         .then(() => {
+          const leaveTxt = "(Leave)"
           let event = {
-            summary: `${name.current.value} - ${reason.current.value}`,
+            summary: `${name.current.value}${leaveTxt} - ${reason.current.value}`,
             description: `${leave.current.value}`,
             start: {
               dateTime: `${startDate.current.value}T00:00:00+08:00`,
@@ -102,7 +103,7 @@ const ApplyLeave = () => {
 
           request.execute((event, res) => {
             window.open(event.htmlLink);
-            console.log(res);
+            // console.log(res);
           });
         })
         .then(() => {
@@ -149,8 +150,6 @@ const ApplyLeave = () => {
   return (
     <div className="container">
       {loading && <Loading />}
-      <p> Need to double check duration of leave value on line 110</p>
-      <p> End Date must be greater than Start Date</p>
       <form className="apply-leave-form">
         {staffList.length === 0 && (
           <>
