@@ -25,7 +25,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="/addstaff" element={<AddStaff />} />
         <Route path="/applyleave" element={<ApplyLeave />} />
-        <Route path="/checkleavestaff" element={<CheckStaffLeave />} />
+        <Route path="/checkstaffleave" element={<CheckStaffLeave />} />
       </Routes>
     </div>
     </BrowserRouter>

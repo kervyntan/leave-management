@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Button from "./Button";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "@mantine/core";
 import { db } from "../firebase";
-import {
-  collection,
-  doc,
-  setDoc,
-} from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 const AddStaff = () => {
+  const navigate = useNavigate();
+  const [opened, setOpened] = useState(false);
   const [formValues, setFormValues] = useState({
     name: "",
     annual: "",
@@ -19,17 +19,18 @@ const AddStaff = () => {
 
   const handleAddStaff = (e) => {
     e.preventDefault();
-      // ID is the name of staff
-      // ${formValues.name}
-      setDoc(doc(db, "staff", `${formValues.name}`), {
-        name: formValues.name,
-        annual_leave: formValues.annual,
-        compassionate_leave: formValues.compassionate,
-        no_pay_leave: formValues.no_pay,
-        paternity_leave: formValues.paternity,
-        maternity_leave: formValues.maternity,
-      });
-
+    // ID is the name of staff
+    // ${formValues.name}
+    setDoc(doc(db, "staff", `${formValues.name}`), {
+      name: formValues.name,
+      annual_leave: formValues.annual,
+      compassionate_leave: formValues.compassionate,
+      no_pay_leave: formValues.no_pay,
+      paternity_leave: formValues.paternity,
+      maternity_leave: formValues.maternity,
+    });
+    setOpened(true);
+    // navigate("/");
   };
 
   const changeHandler = (e) => {
@@ -41,7 +42,16 @@ const AddStaff = () => {
 
   return (
     <div className="container">
-      <p> Add staff Modal</p>
+      <Modal
+        centered
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Successfully added staff!"
+      >
+        Staff has been added successfully.
+        <br />
+        Click away to continue.
+      </Modal>
       <form className="add-staff-form">
         <label htmlFor="name"> Name: </label>
         <input

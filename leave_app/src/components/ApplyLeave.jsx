@@ -2,7 +2,14 @@ import React, { useRef, useEffect, useState } from "react";
 import Button from "./Button";
 import Loading from "./Loading";
 import { db } from "../firebase";
-import { collection, getDocs, query, updateDoc, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  updateDoc,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const ApplyLeave = () => {
@@ -11,6 +18,7 @@ const ApplyLeave = () => {
   const reason = useRef("reason");
   const name = useRef("name");
   const leave = useRef("leave");
+  const colRef = collection(db, "staff");
   const [loading, setLoading] = useState(true);
   const [staffList, setStaffList] = useState([]);
 
@@ -21,15 +29,28 @@ const ApplyLeave = () => {
   }
 
   useEffect(() => {
-    getDocs(query(collection(db, "staff")))
-    .then((items) => {
-      items.forEach((doc) => {
-        setStaffList([...staffList, doc.id]);
-      });
-    })
-    .then( () => {
-        setLoading(false)
-    })
+    setTimeout(() => {
+      getDocs(colRef)
+        .then((querySnapshot) => {
+          // console.log(querySnapshot.size)
+          querySnapshot.forEach((doc) => {
+            setStaffList((staffList) => [...staffList, [doc.data().name]]);
+          });
+        })
+        // use this then to catch when data is fetched**
+        .then(() => {
+          setLoading(false);
+        });
+    }, 500);
+    // getDocs(query(collection(db, "staff")))
+    // .then((items) => {
+    //   items.forEach((doc) => {
+    //     setStaffList([...staffList, doc.id]);
+    //   });
+    // })
+    // .then( () => {
+    //     setLoading(false)
+    // })
   }, []);
 
   const handleAddLeave = (e) => {
@@ -84,39 +105,38 @@ const ApplyLeave = () => {
             console.log(res);
           });
         })
-        .then( () => {
-            // Deducts the leave from the specific staff
+        .then(() => {
+          // Deducts the leave from the specific staff
 
-            // staff name
-            const staffName = name.current.value;
+          // staff name
+          const staffName = name.current.value;
 
-            // the type of leave they took
-            const leaveType = (leave.current.value +"_leave").toLowerCase();
-            const docRef = doc(db, "staff", staffName);
+          // the type of leave they took
+          const leaveType = (leave.current.value + "_leave").toLowerCase();
+          const docRef = doc(db, "staff", staffName);
 
-            // Calculation of leave duration
-            let start = new Date(startDate.current.value);
-            let end = new Date(endDate.current.value);
-            let diff_in_time = end.getTime() - start.getTime();
-            let diff_in_days = diff_in_time / (1000 * 3600 * 24);
+          // Calculation of leave duration
+          let start = new Date(startDate.current.value);
+          let end = new Date(endDate.current.value);
+          let diff_in_time = end.getTime() - start.getTime();
+          let diff_in_days = diff_in_time / (1000 * 3600 * 24);
 
-            // fetch the specific document about the staff
-            getDoc(docRef)
-            .then( (item) => {
-                // Find the current amount of leave the person has
-                let currentLeave = parseInt(item.data()[leaveType]);
-                // Store leave to be changed in new object
-                const docData = {}
-                docData[leaveType] = currentLeave - diff_in_days + 1;
-                updateDoc(docRef, docData)
-                .then ( () => {
-                    console.log("Successful update of document.")
-                })
-                .catch ( (error) => {
-                    console.log(`Failed to update document. ${error}`)
-                })
-            })
-        })
+          // fetch the specific document about the staff
+          getDoc(docRef).then((item) => {
+            // Find the current amount of leave the person has
+            let currentLeave = parseInt(item.data()[leaveType]);
+            // Store leave to be changed in new object
+            const docData = {};
+            docData[leaveType] = currentLeave - diff_in_days + 1;
+            updateDoc(docRef, docData)
+              .then(() => {
+                console.log("Successful update of document.");
+              })
+              .catch((error) => {
+                console.log(`Failed to update document. ${error}`);
+              });
+          });
+        });
     });
   };
 
@@ -124,7 +144,7 @@ const ApplyLeave = () => {
     return <option value={staff}> {staff} </option>;
   });
 
-  console.log(staffNames)
+  console.log(staffNames);
 
   return (
     <div className="container">

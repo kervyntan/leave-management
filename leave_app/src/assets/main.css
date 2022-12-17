@@ -78,7 +78,7 @@ blockquote {
 
 .staff,
 .on-leave {
-    margin : 20px auto;
+    margin : 0px auto 20px auto;
 }
 
 .staff p {
@@ -97,13 +97,19 @@ blockquote {
 .apply-leave-form select {
     width : 70%;
 }
-/* 
-input:focus {
-    border : none;
-} */
+
+h2.page-heading {
+  margin-block : 20px;
+  text-align : center;
+}
 
 .delete-staff-btn {
   margin-block : 20px;
+}
+
+/* Check Staff Leave */
+select#staff {
+  width : 100%;
 }
 
 /* Loading */

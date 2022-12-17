@@ -45,38 +45,6 @@ const Home = () => {
               },
             ]);
           });
-
-        //   gapi.load("client:auth2", () => {
-        //     // init with credentials
-        //     gapi.client.init({
-        //       apiKey: API_KEY,
-        //       clientId: CLIENT_ID,
-        //       discoveryDocs: DISCOVERY_DOC,
-        //       scope: SCOPES,
-        //       plugin_name: "leave-management-371308",
-        //     });
-
-        //     gapi.client.load("calendar", "v3", () => {
-        //       // console.log("added!")
-        //     });
-        //     // triggers popup to sign in to google
-        //     gapi.auth2
-        //       .getAuthInstance()
-        //       .signIn()
-        //       .then(() => {
-        //         let request = gapi.client.calendar.events.list({
-        //           calendarId: "kervyntan@gmail.com",
-        //           timeMax: "2022-12-20T00:00:00+08:00",
-        //           maxResults: 2,
-        //         });
-
-        //         request.execute((event, res) => {
-        //           // window.open(event.htmlLink)
-        //           // must parse the JSON response otherwise cannot access array
-        //           setResult(JSON.parse(res));
-        //         });
-        //       });
-        //   });
         })
         // use this then to catch when data is fetched**
         .then(() => {
@@ -84,12 +52,12 @@ const Home = () => {
         });
     }, 500);
   }, []);
-  const handler = (e) => {
+
+  const toggleDeleteStaff = (e) => {
     setOpened(true);
-    // console.log(e.target.className.split("+")[0])
     setStaffToDelete(e.target.className.split("+")[0]);
-    // console.log(staffToDelete)
   }
+
   // need to only fetch those who are on leave from today onwards
   const onLeave = result[0].result.items.map((person) => {
     return (
@@ -134,7 +102,7 @@ const Home = () => {
             <p className="maternity_leave_para">{person.maternity_leave}</p>
           </td>
           <td className="delete">
-            <img src={close} className={`${person.name}+ close`} onClick={handler} alt="Delete Staff" />
+            <img src={close} className={`${person.name}+ close`} onClick={toggleDeleteStaff} alt="Delete Staff" />
           </td>
         </tr>
       </>
@@ -166,6 +134,7 @@ const Home = () => {
         <Button class="delete-staff-btn btn" text="Delete Staff" onClick={handleDeleteStaff} />
       </Modal>
       <div className="container">
+        <h2 className="page-heading"> List of Staff: </h2>
         <table className="staff">
           <tbody>
             <tr>
@@ -180,7 +149,7 @@ const Home = () => {
           </tbody>
         </table>
 
-        <table className="on-leave">
+        {/* <table className="on-leave">
           <tbody>
             <tr>
               <th> Name </th>
@@ -188,7 +157,7 @@ const Home = () => {
             </tr>
             {onLeave}
           </tbody>
-        </table>
+        </table> */}
       </div>
     </>
   );
