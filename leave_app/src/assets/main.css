@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,700;1,500&display=swap');
 :root {
     --clr-primary : #8eb1d7;
+    --clr-black : #000;
 }
 
 * {
@@ -50,8 +51,17 @@ blockquote {
     margin-left : auto;
 } */
 
+button {
+  padding : 5px 10px 5px 10px;
+  border-radius : 25px;
+  border : 1px solid var(--clr-black);
+  background : var(--clr-primary);
+  color : var(--clr-black);
+  font-weight : 700;
+}
+
 .nav > a {
-    color : #000;
+    color : var(--clr-black);
     text-decoration : none;
     font-weight : 700;
 }
@@ -66,7 +76,7 @@ blockquote {
     flex-direction : column;
     gap : 1em;
     background : #EFEFEF;
-    box-shadow: 0px 0px 2px 2px #000;
+    box-shadow: 0px 0px 2px 2px var(--clr-black);
     margin-block : 20px;
     padding : 20px;
 }
@@ -101,7 +111,7 @@ blockquote {
 .on-leave td,
 .on-leave th {
     padding : 10px;
-    border : 1px solid #000;
+    border : 1px solid var(--clr-black);
     text-align : center;
     font-weight : 700;
 }
@@ -292,3 +302,29 @@ select#staff {
       transform: rotate(360deg);
     }
   }
+
+/* Media Queries */
+@media (max-width : 768px) {
+  table {
+    display : block;
+    width : 100%;
+    overflow : scroll;
+    /* margin : 0 auto; */
+  }
+
+  table thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+  }
+  table td.column-1 {
+    position : sticky;
+    left : 0;
+    z-index : 2;
+    background : white;
+  }
+
+  .container {
+    padding-inline : 20px;
+  }
+}

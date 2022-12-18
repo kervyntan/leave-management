@@ -16,7 +16,6 @@ const Home = () => {
   const [opened, setOpened] = useState(false);
   const [staffDetails, setStaffDetails] = useState([]);
   const [staffToDelete, setStaffToDelete] = useState();
-  const [result, setResult] = useState([{ result: { items: [] } }]);
   const [loading, setLoading] = useState(true);
   const colRef = collection(db, "staff");
   if (loading) {
@@ -61,7 +60,7 @@ const Home = () => {
     return (
       <>
         <tr key={Math.random}>
-          <td className="name">
+          <td className="name column-1">
             <p className="name_para">{person.name}</p>
           </td>
           <td className="annual_leave">
@@ -110,12 +109,11 @@ const Home = () => {
         <br />
         <Button class="delete-staff-btn btn" text="Delete Staff" onClick={handleDeleteStaff} />
       </Modal>
-      <div className="container">
         <h2 className="page-heading"> List of Staff: </h2>
         <table className="staff">
           <tbody>
             <tr>
-              <th> Name </th>
+              <th class="column-1"> Name </th>
               <th> Annual </th>
               <th> Compassionate </th>
               <th> No Pay </th>
@@ -125,7 +123,6 @@ const Home = () => {
             {staff}
           </tbody>
         </table>
-      </div>
     </>
   );
 };

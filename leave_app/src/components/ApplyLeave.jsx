@@ -43,15 +43,6 @@ const ApplyLeave = () => {
           setLoading(false);
         });
     }, 500);
-    // getDocs(query(collection(db, "staff")))
-    // .then((items) => {
-    //   items.forEach((doc) => {
-    //     setStaffList([...staffList, doc.id]);
-    //   });
-    // })
-    // .then( () => {
-    //     setLoading(false)
-    // })
   }, []);
 
   const handleAddLeave = (e) => {
@@ -116,7 +107,7 @@ const ApplyLeave = () => {
           // the type of leave they took
           const leaveType = (leave.current.value + "_leave").toLowerCase();
           const docRef = doc(db, "staff", staffName);
-          
+
           // fetch the specific document about the staff
           getDoc(docRef).then((item) => {
             // Find the current amount of leave the person has
@@ -146,8 +137,6 @@ const ApplyLeave = () => {
   return (
     <div className="container">
       {loading && <Loading />}
-      <p> Need to double check duration of leave value on line 110</p>
-      <p> End Date must be greater than Start Date</p>
       <form className="apply-leave-form">
         {staffList.length === 0 && (
           <>
