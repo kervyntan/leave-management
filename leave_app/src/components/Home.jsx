@@ -113,7 +113,7 @@ const Home = () => {
         <table className="staff">
           <tbody>
             <tr>
-              <th class="column-1"> Name </th>
+              <th className="column-1"> Name </th>
               <th> Annual </th>
               <th> Compassionate </th>
               <th> No Pay </th>

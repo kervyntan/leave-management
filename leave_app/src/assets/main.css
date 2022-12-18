@@ -312,12 +312,8 @@ select#staff {
     /* margin : 0 auto; */
   }
 
-  table thead th:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 2;
-  }
-  table td.column-1 {
+  table td.column-1,
+  table th.column-1 {
     position : sticky;
     left : 0;
     z-index : 2;
