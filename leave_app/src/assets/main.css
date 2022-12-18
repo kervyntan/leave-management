@@ -95,9 +95,13 @@ button {
     text-align : center;
 }
 
+table.staff, 
+table.staff-table {
+  width : 100%;
+}
+
 .staff-table {
   margin-top : 20px;
-  width : 100%;
 }
 
 .staff-table th {

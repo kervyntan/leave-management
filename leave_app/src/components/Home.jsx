@@ -17,6 +17,7 @@ const Home = () => {
   const [staffDetails, setStaffDetails] = useState([]);
   const [staffToDelete, setStaffToDelete] = useState();
   const [loading, setLoading] = useState(true);
+  const [showDeleteText, setShowDeleteText] = useState(false);
   const colRef = collection(db, "staff");
   if (loading) {
     document.body.style.overflow = "hidden";
@@ -89,9 +90,11 @@ const Home = () => {
   });
 
   const handleDeleteStaff = () => {
+    setShowDeleteText(true);
     deleteDoc(doc(db, "staff", staffToDelete))
     .then( () => {
       console.log("Staff Deleted.")
+      setShowDeleteText(false);
       window.location.reload();
     })
   }
@@ -105,9 +108,10 @@ const Home = () => {
         onClose={() => setOpened(false)}
         title="Delete Staff"
       >
-        Are you sure you want to delete this staff?
+      Are you sure you want to delete this staff?
         <br />
         <Button class="delete-staff-btn btn" text="Delete Staff" onClick={handleDeleteStaff} />
+        {showDeleteText && <p> Entry is being deleted. Please wait for the page to reload. </p>}
       </Modal>
         <h2 className="page-heading"> List of Staff: </h2>
         <table className="staff">
@@ -119,7 +123,7 @@ const Home = () => {
               <th> No Pay </th>
               <th> Paternity </th>
               <th> Maternity </th>
-            </tr>
+            </tr> 
             {staff}
           </tbody>
         </table>
