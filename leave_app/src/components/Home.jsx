@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AddStaff from "./AddStaff";
 import Loading from "./Loading";
 import Button from "./Button";
 import close from "../assets/close_icon.png"
@@ -13,7 +12,7 @@ import {
 } from "firebase/firestore";
 
 const Home = () => {
-  // add a cross that deletes the staff from the list
+  // Edit individual values
   const [opened, setOpened] = useState(false);
   const [staffDetails, setStaffDetails] = useState([]);
   const [staffToDelete, setStaffToDelete] = useState();
@@ -58,25 +57,6 @@ const Home = () => {
     setStaffToDelete(e.target.className.split("+")[0]);
   }
 
-  // need to only fetch those who are on leave from today onwards
-  const onLeave = result[0].result.items.map((person) => {
-    return (
-      <>
-        <tr key={Math.random}>
-          <td className="name">
-            <p className="name_para">{person.summary}</p>
-          </td>
-          <td className="name">
-            <p className="name_para">
-              {person.start.dateTime.split("T")[0]} -{" "}
-              {person.end.dateTime.split("T")[0]}
-            </p>
-          </td>
-        </tr>
-      </>
-    );
-  });
-
   const staff = staffDetails.map((person) => {
     return (
       <>
@@ -108,9 +88,6 @@ const Home = () => {
       </>
     );
   });
-
-  // console.log(numberOfStaff)
-  // console.log(staffDetails)
 
   const handleDeleteStaff = () => {
     deleteDoc(doc(db, "staff", staffToDelete))
@@ -148,16 +125,6 @@ const Home = () => {
             {staff}
           </tbody>
         </table>
-
-        {/* <table className="on-leave">
-          <tbody>
-            <tr>
-              <th> Name </th>
-              <th> Duration </th>
-            </tr>
-            {onLeave}
-          </tbody>
-        </table> */}
       </div>
     </>
   );

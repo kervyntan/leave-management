@@ -87,6 +87,11 @@ blockquote {
 
 .staff-table {
   margin-top : 20px;
+  width : 100%;
+}
+
+.staff-table th {
+   width : 50%;
 }
 
 .staff td,
@@ -97,6 +102,8 @@ blockquote {
 .on-leave th {
     padding : 10px;
     border : 1px solid #000;
+    text-align : center;
+    font-weight : 700;
 }
 
 .apply-leave-form input, 

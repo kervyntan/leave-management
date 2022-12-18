@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Button from "./Button";
 import Loading from "./Loading";
+import { dateCalculator } from "../dateCalculator";
 import { db } from "../firebase";
 import {
   collection,
@@ -76,8 +77,9 @@ const ApplyLeave = () => {
         .getAuthInstance()
         .signIn()
         .then(() => {
+          const leaveTxt = "(Leave)"
           let event = {
-            summary: `${name.current.value} - ${reason.current.value}`,
+            summary: `${name.current.value}${leaveTxt} - ${reason.current.value}`,
             description: `${leave.current.value}`,
             start: {
               dateTime: `${startDate.current.value}T00:00:00+08:00`,
@@ -114,17 +116,12 @@ const ApplyLeave = () => {
           // the type of leave they took
           const leaveType = (leave.current.value + "_leave").toLowerCase();
           const docRef = doc(db, "staff", staffName);
-
-          // Calculation of leave duration
-          let start = new Date(startDate.current.value);
-          let end = new Date(endDate.current.value);
-          let diff_in_time = end.getTime() - start.getTime();
-          let diff_in_days = diff_in_time / (1000 * 3600 * 24);
-
+          
           // fetch the specific document about the staff
           getDoc(docRef).then((item) => {
             // Find the current amount of leave the person has
             let currentLeave = parseInt(item.data()[leaveType]);
+            let diff_in_days = dateCalculator(startDate.current.value, endDate.current.value);
             // Store leave to be changed in new object
             const docData = {};
             docData[leaveType] = currentLeave - diff_in_days + 1;
