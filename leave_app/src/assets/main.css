@@ -147,6 +147,8 @@ select#staff {
     width: 100%;
     height: 100%;
     background-color: rgba(16, 16, 16, 0.5);
+    /* Added z-index to mask white bg on "Name" th */
+    z-index : 3;
   }
   
   .loading-ring {
@@ -159,6 +161,7 @@ select#staff {
     width: 200px;
     height: 200px;
     transform : scale(0.79);
+    /* z-index : 3; */
   }
   
   .loading-ring > div {

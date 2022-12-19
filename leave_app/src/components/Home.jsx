@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 
 const Home = () => {
-  // Edit individual values
+  // Edit individual values of the leaves in case user keys in wrongly
   const [opened, setOpened] = useState(false);
   const [staffDetails, setStaffDetails] = useState([]);
   const [staffToDelete, setStaffToDelete] = useState();
@@ -47,7 +47,7 @@ const Home = () => {
         })
         // use this then to catch when data is fetched**
         .then(() => {
-          setLoading(false);
+          setLoading(false);  
         });
     }, 500);
   }, []);
