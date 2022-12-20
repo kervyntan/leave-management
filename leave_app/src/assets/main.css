@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,700;1,500&display=swap');
 :root {
-    --clr-primary : #8eb1d7;
-    --clr-black : #000;
+    --clr-primary : #4059AD;
+    --clr-secondary : #97D8C4;
+    --clr-text : #EFF2F1;
 }
 
 * {
@@ -47,6 +48,10 @@ blockquote {
     justify-content: space-around;
 }
 
+.selected {
+  color : var(--clr-secondary) !important; 
+}
+
 /* .nav > a:not(:first-child) {
     margin-left : auto;
 } */
@@ -55,19 +60,15 @@ button {
   padding : 5px 10px 5px 10px;
   border-radius : 25px;
   border : 1px solid var(--clr-black);
-  background : var(--clr-primary);
-  color : var(--clr-black);
+  background : var(--clr-secondary);
+  color : var(--clr-text);
   font-weight : 700;
 }
 
 .nav > a {
-    color : var(--clr-black);
+    color : var(--clr-text);
     text-decoration : none;
     font-weight : 700;
-}
-
-.nav > a:active {
-    color : red;
 }
 
 .add-staff-form,
@@ -75,7 +76,7 @@ button {
     display : flex;
     flex-direction : column;
     gap : 1em;
-    background : #EFEFEF;
+    background : var(--clr-primary);
     box-shadow: 0px 0px 2px 2px var(--clr-black);
     margin-block : 20px;
     padding : 20px;
@@ -106,6 +107,11 @@ table.staff-table {
 
 .staff-table th {
    width : 50%;
+}
+
+label {
+  color : var(--clr-text);
+  font-weight : 700;
 }
 
 .staff td,

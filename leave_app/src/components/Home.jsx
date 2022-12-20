@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Loading from "./Loading";
 import Button from "./Button";
 import close from "../assets/close_icon.png"
@@ -48,6 +49,7 @@ const Home = () => {
         // use this then to catch when data is fetched**
         .then(() => {
           setLoading(false);  
+
         });
     }, 500);
   }, []);
