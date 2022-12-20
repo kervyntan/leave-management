@@ -121,7 +121,7 @@ label {
 .on-leave td,
 .on-leave th {
     padding : 10px;
-    border : 1px solid var(--clr-black);
+    border : 1px solid var(--clr-primary);
     text-align : center;
     font-weight : 700;
 }
