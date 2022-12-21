@@ -138,7 +138,7 @@ const Home = () => {
     const report = new JsPDF('portrait', 'pt', 'a3');
     report.html(document.querySelector('#table-staff'))
     .then( () => {
-      report.save('report.pdf');
+      report.save('staff.pdf');
     })
   }
 
