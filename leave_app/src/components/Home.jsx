@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Loading from "./Loading";
 import Button from "./Button";
 import html2canvas from 'html2canvas';
@@ -11,7 +11,6 @@ import {
   getDocs,
   doc
 } from "firebase/firestore";
-import { useRef } from "react";
 
 const Home = () => {
   // Edit individual values of the leaves in case user keys in wrongly
@@ -31,7 +30,7 @@ const Home = () => {
     document.body.style.overflow = "unset";
   }
 
-  useEffect( () => {
+  useEffect(() => {
     console.log("This has changed.")
   }, [name])
 
@@ -56,7 +55,7 @@ const Home = () => {
         })
         // use this then to catch when data is fetched**
         .then(() => {
-          setLoading(false);  
+          setLoading(false);
 
         });
     }, 500);
@@ -72,35 +71,35 @@ const Home = () => {
       <>
         <tr key={Math.random}>
           <td className="name column-1">
-            <div contentEditable>
-            <p ref={name} className="name_para">{person.name}</p> 
+            <div contentEditable suppressContentEditableWarning={true}>
+              <p ref={name} className="name_para">{person.name}</p>
             </div>
           </td>
           <td className="annual_leave">
-            <div contentEditable>
-            <p className="annual_leave_para">{person.annual_leave}</p>
+            <div contentEditable suppressContentEditableWarning={true}>
+              <p className="annual_leave_para">{person.annual_leave}</p>
             </div>
           </td>
           <td className="compassionate_leave">
-            <div contentEditable>
-            <p className="compassionate_leave_para">
-              {person.compassionate_leave}
-            </p>
+            <div contentEditable suppressContentEditableWarning={true}>
+              <p className="compassionate_leave_para">
+                {person.compassionate_leave}
+              </p>
             </div>
           </td>
           <td className="no_pay_leave">
-            <div contentEditable>
-            <p className="no_pay_leave_para">{person.no_pay_leave}</p>
+            <div contentEditable suppressContentEditableWarning={true}>
+              <p className="no_pay_leave_para">{person.no_pay_leave}</p>
             </div>
           </td>
           <td className="paternity_leave">
-            <div contentEditable>
-            <p className="paternity_leave_para">{person.paternity_leave}</p>
+            <div contentEditable suppressContentEditableWarning={true}>
+              <p className="paternity_leave_para">{person.paternity_leave}</p>
             </div>
           </td>
           <td className="maternity_leave">
-            <div contentEditable>
-            <p className="maternity_leave_para">{person.maternity_leave}</p>
+            <div contentEditable suppressContentEditableWarning={true}>
+              <p className="maternity_leave_para">{person.maternity_leave}</p>
             </div>
           </td>
           <td className="delete">
@@ -114,26 +113,17 @@ const Home = () => {
   const handleDeleteStaff = () => {
     setShowDeleteText(true);
     deleteDoc(doc(db, "staff", staffToDelete))
-    .then( () => {
-      console.log("Staff Deleted.")
-      setShowDeleteText(false);
-      window.location.reload();
-    })
+      .then(() => {
+        console.log("Staff Deleted.")
+        setShowDeleteText(false);
+        window.location.reload();
+      })
   }
 
   const generatePDF = () => {
-    // tableExport('table-1', 'test', 'pdf')
-    const input = document.getElementById('table-1')
-    html2canvas(input)
-    .then( (canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      var pdf=new doc.jsPDF();
-      console.log("Hello");
-      pdf.addImage(imgData, 'PNG', 0, 0);
-      pdf.save("download.pdf")
-    })
+    tableExport('table-1', 'test', 'xls')
   }
- 
+
   return (
     <>
       {loading && <Loading />}
@@ -143,26 +133,26 @@ const Home = () => {
         onClose={() => setOpened(false)}
         title="Delete Staff"
       >
-      Are you sure you want to delete this staff?
+        Are you sure you want to delete this staff?
         <br />
         <Button class="delete-staff-btn btn" text="Delete Staff" onClick={handleDeleteStaff} />
         {showDeleteText && <p> Entry is being deleted. Please wait for the page to reload. </p>}
       </Modal>
-        <Button class="btn" text="Export as PDF" onClick={generatePDF} />
-        <h2 className="page-heading"> List of Staff: </h2>
-        <table className="staff" id="table-1">
-          <tbody>
-            <tr>
-              <th className="column-1"> Name </th>
-              <th> Annual </th>
-              <th> Compassionate </th>
-              <th> No Pay </th>
-              <th> Paternity </th>
-              <th> Maternity </th>
-            </tr> 
-            {staff}
-          </tbody>
-        </table>
+      <Button class="btn" text="Export as Excel" onClick={generatePDF} />
+      <h2 className="page-heading"> List of Staff: </h2>
+      <table className="staff" id="table-1">
+        <tbody>
+          <tr>
+            <th className="column-1"> Name </th>
+            <th> Annual </th>
+            <th> Compassionate </th>
+            <th> No Pay </th>
+            <th> Paternity </th>
+            <th> Maternity </th>
+          </tr>
+          {staff}
+        </tbody>
+      </table>
     </>
   );
 };

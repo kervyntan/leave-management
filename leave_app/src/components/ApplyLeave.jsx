@@ -115,7 +115,7 @@ const ApplyLeave = () => {
             let diff_in_days = dateCalculator(startDate.current.value, endDate.current.value);
             // Store leave to be changed in new object
             const docData = {};
-            docData[leaveType] = currentLeave - diff_in_days + 1;
+            docData[leaveType] = currentLeave - diff_in_days;
             updateDoc(docRef, docData)
               .then(() => {
                 console.log("Successful update of document.");
