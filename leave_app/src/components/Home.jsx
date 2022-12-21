@@ -65,8 +65,18 @@ const Home = () => {
     setOpened(true);
     setStaffToDelete(e.target.className.split("+")[0]);
   }
+  
+  const compareNames = (a,b) => {
+    if ( a.name < b.name ) {
+      return -1;
+    }
+    if ( a.name > b.name ) {
+      return 1;
+    }
+    return 0;
+  }
 
-  const staff = staffDetails.map((person) => {
+  const staff = staffDetails.sort(compareNames).map((person) => {
     return (
       <>
         <tr key={Math.random}>

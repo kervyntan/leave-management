@@ -68,6 +68,7 @@ const AddStaff = () => {
           name="annual"
           placeholder="Number of Days: "
           onChange={changeHandler}
+          defaultValue="14"
           required
         />
 
@@ -78,6 +79,7 @@ const AddStaff = () => {
           placeholder="Number of Days: "
           type="text"
           onChange={changeHandler}
+          defaultValue="14"
           required
         />
 
@@ -88,16 +90,7 @@ const AddStaff = () => {
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
-          required
-        />
-
-        <label htmlFor="paternity"> Paternity Leave: </label>
-        <input
-          id="paternity"
-          name="paternity"
-          type="text"
-          placeholder="Number of Days: "
-          onChange={changeHandler}
+          defaultValue="14"
           required
         />
 
@@ -105,6 +98,18 @@ const AddStaff = () => {
         <input
           id="maternity"
           name="maternity"
+          type="text"
+          placeholder="Number of Days: "
+          onChange={changeHandler}
+          defaultValue="14"
+          required
+        />
+
+
+        <label htmlFor="paternity"> Paternity Leave: </label>
+        <input
+          id="paternity"
+          name="paternity"
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
