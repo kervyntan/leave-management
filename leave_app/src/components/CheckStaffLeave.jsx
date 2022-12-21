@@ -51,6 +51,7 @@ const CheckStaffLeave = () => {
                 <td> {staff.whichDays} </td>
             </tr>
         </>
+        
     )
     }
     else {

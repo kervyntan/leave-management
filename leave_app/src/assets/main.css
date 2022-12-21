@@ -52,9 +52,14 @@ blockquote {
   color : var(--clr-secondary) !important; 
 }
 
-/* .nav > a:not(:first-child) {
-    margin-left : auto;
-} */
+.generate-excel-btn {
+  margin-top : 20px;
+}
+
+.generate-pdf-btn {
+  margin-left : 20px;
+}
+
 
 button {
   padding : 5px 10px 5px 10px;

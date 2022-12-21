@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Loading from "./Loading";
 import Button from "./Button";
-import html2canvas from 'html2canvas';
+import JsPDF from 'jspdf';
 import close from "../assets/close_icon.png"
 import { Modal } from "@mantine/core";
 import { db } from "../firebase";
@@ -130,8 +130,16 @@ const Home = () => {
       })
   }
 
+  const generateExcel = () => {
+    tableExport('table-staff', 'test', 'xls')
+  }
+
   const generatePDF = () => {
-    tableExport('table-1', 'test', 'xls')
+    const report = new JsPDF('portrait', 'pt', 'a3');
+    report.html(document.querySelector('#table-staff'))
+    .then( () => {
+      report.save('report.pdf');
+    })
   }
 
   return (
@@ -148,9 +156,10 @@ const Home = () => {
         <Button class="delete-staff-btn btn" text="Delete Staff" onClick={handleDeleteStaff} />
         {showDeleteText && <p> Entry is being deleted. Please wait for the page to reload. </p>}
       </Modal>
-      <Button class="btn" text="Export as Excel" onClick={generatePDF} />
+      <Button class="generate-excel-btn btn" text="Export as Excel" onClick={generateExcel} />
+      <Button class="generate-pdf-btn btn" text="Export as PDF" onClick={generatePDF} />
       <h2 className="page-heading"> List of Staff: </h2>
-      <table className="staff" id="table-1">
+      <table className="staff" id="table-staff">
         <tbody>
           <tr>
             <th className="column-1"> Name </th>
