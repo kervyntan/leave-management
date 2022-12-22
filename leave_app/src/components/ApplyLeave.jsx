@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Button from "./Button";
 import Loading from "./Loading";
 import { Modal } from "@mantine/core";
-import { dateCalculatorExcludeWeekend } from "../dateCalculatorExcludeWeekend";
+import { dateCalculatorExcludeWeekend } from "../dateMethods";
 import { db } from "../firebase";
 import {
   collection,
@@ -55,7 +55,7 @@ const ApplyLeave = () => {
     // the type of leave they took
     const leaveType = (leave.current.value + "_leave").toLowerCase();
     // number of days taken/selected by the staff 
-    let days_taken = dateCalculatorExcludeWeekend(new Date(startDate.current.value), new Date(endDate.current.value));
+    let days_taken = dateCalculatorExcludeWeekend(new Date(startDate.current.value), new Date(endDate.current.value)).length;
     getDoc(docRef).then((item) => {
       // Find the current amount of leave the person has
       currentLeave = parseInt(item.data()[leaveType])

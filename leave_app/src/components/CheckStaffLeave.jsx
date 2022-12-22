@@ -1,13 +1,12 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import Loading from "./Loading";
-import { dateCalculatorExcludeWeekend } from "../dateCalculatorExcludeWeekend";
+import { dateCalculatorExcludeWeekend, getFirstAndLastDay } from "../dateMethods";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const CheckStaffLeave = () => {
   // neeed to fix Ache cannot see the leave
-  // Label the dates if they are considered weekends
   const colRef = collection(db, "staff");
   // Selected staff from options
   const select = useRef("select");
@@ -92,62 +91,57 @@ const CheckStaffLeave = () => {
         .signIn()
         .then(() => {
           // Get all the events in a month
+
+          // First and last day of the current month
+          const firstDate = getFirstAndLastDay()[0];
+          const lastDate = getFirstAndLastDay()[1];
           let request = gapi.client.calendar.events.list({
             calendarId: "primary",
-            timeMin: "2022-12-01T00:00:00+08:00",
-            timeMax: "2022-12-31T23:59:59+08:00",
+            timeMin: `${firstDate}T00:00:00+08:00`,
+            timeMax: `${lastDate}T23:59:59+08:00`,
           });
 
           request.execute((event, res) => {
             // Array containing all events in the month
             const resArr = JSON.parse(res)[0].result.items;
-            console.log(resArr)
             resArr.forEach((item) => {
               // Name of the staff
               const staff = item.summary.split("(")[0];
               // Start and end Date
               const startDate = (item.start.dateTime.split("T")[0].split(":"))[0];
               const endDate = (item.end.dateTime.split("T")[0].split(":"))[0];
-            
+
+              // Calculate the number of days from the two given dates
+              const days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate));
+
               // Start and end day eg. 10/11/12
               let startDay = parseInt(startDate.split("-")[2]);
               let endDay = parseInt(endDate.split("-")[2]);
 
               // Number of days between endDay and startDay
-              let number_of_days = endDay - startDay;
+              // let number_of_days = endDay - startDay;
               let whichDays = "";
 
-              // Checks if the amount of leave is more than a day
-              if (startDay !== endDay) {
-                while(number_of_days > -1) {
-                    if (whichDays === "") {
-                        whichDays = `${whichDays} ${startDay}`;
-                    } else {
-                        whichDays = `${whichDays}, ${startDay}`;
-                    }
-                    startDay = startDay + 1;
-                    number_of_days = number_of_days - 1;
+              days_taken.forEach((item) => {
+                if (whichDays === "") {
+                  whichDays = `${whichDays} ${item.getDate()}`
+                } else {
+                  whichDays = `${whichDays}, ${item.getDate()}`;
                 }
-              } else {
-                whichDays = startDay;
-              }
-
-              // Calculate the number of days from the two given dates
-              const days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate));
+              })
 
               // Check if the selected staff is equal to the one in the loop/check whether staff exists
-              console.log(select.current.value)
-              console.log(staff)
+
+              const number_of_days_taken = days_taken.length;
               if (select.current.value === staff) {
-                console.log(numberOfLeaves)
                 if (numberOfLeaves.find((obj) => obj.name === select.current.value)) {
                   // Assign values to the object containing the staff information
-                  numberOfLeaves.find( (obj) => obj.name === select.current.value).numberOfLeave = days_taken;
+                  numberOfLeaves.find( (obj) => obj.name === select.current.value).numberOfLeave = number_of_days_taken;
                   numberOfLeaves.find( (obj) => obj.name === select.current.value).whichDays = whichDays;
                   // Trigger data to be shown (haveTakenLeave)
                   setCounterStaff(counterStaff + 1);
                 } else {
-                  console.log("This is an eagle");
+                  console.log("Error loading staff leaves.");
                 }
               } else {
                 setCounterStaff(counterStaff + 1);
@@ -159,13 +153,19 @@ const CheckStaffLeave = () => {
     });
   };
 
-  const staffList = staffArr.map((staff) => {
-    return <option value={staff}> {staff} </option>;
+  const staffList = staffArr.map((staff, index) => {
+    return <option key={index} value={staff}> {staff} </option>;
   });
+
+  const handleChangeMonthViewLeave = () => {
+    // need to pass the current selected month as a parameter to the getFirstAndLastDay function
+    // handleGoogle()
+  }
 
   return (
     <div className="container">
       {loading && <Loading />}
+      <p> Add a dropdown selection to allow change of month to view the leave</p>
       <h2 className="page-heading"> Leave Overview: </h2>
       <label name="staff" htmlFor="staff">
         <select
@@ -173,6 +173,18 @@ const CheckStaffLeave = () => {
           id="staff"
           ref={select}
           onChange={handleGoogle}
+        >
+        <option defaultValue=""></option>
+          {staffList}
+        </select>
+      </label>
+
+      <label name="month" htmlFor="month">
+        <select
+          name="month"
+          id="month"
+          ref={select}
+          onChange={handleChangeMonthViewLeave}
         >
         <option defaultValue=""></option>
           {staffList}

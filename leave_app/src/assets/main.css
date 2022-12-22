@@ -104,10 +104,12 @@ button {
 table.staff, 
 table.staff-table {
   width : 100%;
+  text-align : center;
 }
 
 .staff-table {
   margin-top : 20px;
+  /* margin-left : auto; */
 }
 
 .staff-table th {

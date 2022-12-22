@@ -10,11 +10,11 @@ const AddStaff = () => {
   const [opened, setOpened] = useState(false);
   const [formValues, setFormValues] = useState({
     name: "",
-    annual: "",
-    compassionate: "",
-    no_pay: "",
+    annual: 14,
+    compassionate: 3,
+    no_pay: 14,
+    maternity: 14,
     paternity: "",
-    maternity: "",
   });
 
   const handleAddStaff = (e) => {
@@ -59,6 +59,7 @@ const AddStaff = () => {
           name="name"
           placeholder="Name: "
           onChange={changeHandler}
+          value={formValues.name}
           required
         />
 
@@ -68,7 +69,7 @@ const AddStaff = () => {
           name="annual"
           placeholder="Number of Days: "
           onChange={changeHandler}
-          defaultValue="14"
+          value={formValues.annual}
           required
         />
 
@@ -79,7 +80,7 @@ const AddStaff = () => {
           placeholder="Number of Days: "
           type="text"
           onChange={changeHandler}
-          defaultValue="14"
+          value={formValues.compassionate}
           required
         />
 
@@ -90,7 +91,7 @@ const AddStaff = () => {
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
-          defaultValue="14"
+          value={formValues.no_pay}
           required
         />
 
@@ -101,7 +102,7 @@ const AddStaff = () => {
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
-          defaultValue="14"
+          value={formValues.maternity}
           required
         />
 
@@ -113,6 +114,7 @@ const AddStaff = () => {
           type="text"
           placeholder="Number of Days: "
           onChange={changeHandler}
+          value={formValues.paternity}
           required
         />
 
