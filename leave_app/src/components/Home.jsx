@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Loading from "./Loading";
 import Button from "./Button";
 import JsPDF from 'jspdf';
@@ -17,7 +17,6 @@ const Home = () => {
   // Edit staff button
   // turn all the td values into editable inputs
   let tableExport = require('table-export');
-  const name = useRef("");
   const [opened, setOpened] = useState(false);
   const [staffDetails, setStaffDetails] = useState([]);
   const [staffToDelete, setStaffToDelete] = useState();
@@ -29,10 +28,6 @@ const Home = () => {
   } else {
     document.body.style.overflow = "unset";
   }
-
-  useEffect(() => {
-    console.log("This has changed.")
-  }, [name])
 
   useEffect(() => {
     setTimeout(() => {
@@ -82,7 +77,7 @@ const Home = () => {
         <tr key={Math.random}>
           <td className="name column-1">
             <div contentEditable suppressContentEditableWarning={true}>
-              <p ref={name} className="name_para">{person.name}</p>
+              <p className="name_para">{person.name}</p>
             </div>
           </td>
           <td className="annual_leave">

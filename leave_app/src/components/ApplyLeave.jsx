@@ -1,12 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import Button from "./Button";
 import Loading from "./Loading";
-import { dateCalculator } from "../dateCalculator";
+import { dateCalculatorExcludeWeekend } from "../dateCalculatorExcludeWeekend";
 import { db } from "../firebase";
 import {
   collection,
   getDocs,
-  query,
   updateDoc,
   doc,
   getDoc,
@@ -14,6 +13,7 @@ import {
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const ApplyLeave = () => {
+  // Need to find out how to tell if its a saturday/sunday
   const startDate = useRef("startDate");
   const endDate = useRef("endDate");
   const reason = useRef("reason");
@@ -112,7 +112,7 @@ const ApplyLeave = () => {
           getDoc(docRef).then((item) => {
             // Find the current amount of leave the person has
             let currentLeave = parseInt(item.data()[leaveType]);
-            let diff_in_days = dateCalculator(startDate.current.value, endDate.current.value);
+            let diff_in_days = dateCalculatorExcludeWeekend(new Date(startDate.current.value), new Date(endDate.current.value));
             // Store leave to be changed in new object
             const docData = {};
             docData[leaveType] = currentLeave - diff_in_days;
@@ -137,6 +137,7 @@ const ApplyLeave = () => {
   return (
     <div className="container">
       {loading && <Loading />}
+      <p> Make sure that Saturdays and Sundays are not counted in the leave</p>
       <form className="apply-leave-form">
         {staffList.length === 0 && (
           <>

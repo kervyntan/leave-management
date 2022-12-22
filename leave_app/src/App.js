@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import AddStaff from "./components/AddStaff";
 import ApplyLeave from "./components/ApplyLeave";
 import CheckStaffLeave from "./components/CheckStaffLeave";
+import Settings from "./components/Settings";
 
 function App() {
   
@@ -26,6 +27,7 @@ function App() {
         <Route path="/addstaff" element={<AddStaff />} />
         <Route path="/applyleave" element={<ApplyLeave />} />
         <Route path="/checkstaffleave" element={<CheckStaffLeave />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </div>
     </BrowserRouter>

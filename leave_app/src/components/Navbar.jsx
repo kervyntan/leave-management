@@ -10,37 +10,71 @@ const Navbar = () => {
     home : false,
     applyLeave : false,
     addStaff : false,
-    checkStaffLeave : false
+    checkStaffLeave : false,
+    settings : false
   })
+
+  // const indicateCurrentPage = (page) => {
+  //   const currPath = page.split("/")[1];
+  //   for (let key in selectedTab) {
+  //     selectedTab[key] = false;
+  //   }
+
+  //   if (currPath === "/") {
+  //     console.log(selectedTab["home"])
+  //     selectedTab["home"] = true;
+  //   } else {
+  //     console.log(selectedTab[currPath])
+  //     console.log(currPath)
+  //     selectedTab[currPath] = true;
+  //     console.log(selectedTab)
+  //   }
+  // }
   useEffect(() => {
-    console.log(location.pathname)
+    // indicateCurrentPage(location.pathname)
+    // for (let key in selectedTab) {
+    //   selectedTab[key] = false;
+    // }
+
     if (location.pathname === "/") {
         setSelectedTab({
             home : true,
             applyLeave : false,
             addStaff : false,
-            checkStaffLeave : false
+            checkStaffLeave : false,
+            settings : false
         })
     } else if (location.pathname === "/applyleave") {
         setSelectedTab({
             home : false,
             applyLeave : true,
             addStaff : false,
-            checkStaffLeave : false
+            checkStaffLeave : false,
+            settings : false
         })
     } else if (location.pathname === "/addstaff") {
         setSelectedTab({
             home : false,
             applyLeave : false,
             addStaff : true,
-            checkStaffLeave : false
+            checkStaffLeave : false,
+            settings : false
         })
     } else if (location.pathname === "/checkstaffleave") {
         setSelectedTab({
             home : false,
             applyLeave : false,
             addStaff : false,
-            checkStaffLeave : true
+            checkStaffLeave : true,
+            settings : false
+        })
+    } else if (location.pathname === "/settings") {
+        setSelectedTab({
+            home : false,
+            applyLeave : false,
+            addStaff : false,
+            checkStaffLeave : false,
+            settings : true
         })
     }
   }, [location.pathname]);
@@ -57,6 +91,9 @@ const Navbar = () => {
       </Link>
       <Link to="/checkstaffleave" className={selectedTab.checkStaffLeave ?  "selected" : "" }>
         Check Staff
+      </Link>
+      <Link to="/settings" className={selectedTab.settings ?  "selected" : "" }>
+        Settings
       </Link>
     </div>
   );

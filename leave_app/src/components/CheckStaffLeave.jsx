@@ -6,6 +6,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const CheckStaffLeave = () => {
+  // message: 'API discovery response missing required fields.' error causing first load to break 
   const colRef = collection(db, "staff");
   // Selected staff from options
   const select = useRef("select");
@@ -94,7 +95,7 @@ const CheckStaffLeave = () => {
           request.execute((event, res) => {
             // Array containing all events in the month
             const resArr = JSON.parse(res)[0].result.items;
-
+            console.log(resArr)
             resArr.forEach((item) => {
               // Name of the staff
               const staff = item.summary.split("(")[0];
