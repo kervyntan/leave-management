@@ -7,3 +7,5 @@ https://leave-management-adf7e.web.app/
 ✅Apply leave for the staff that communicates via the Google Calendar API to log the events to the calendar
 
 ✅Add a staff member seamlessly
+
+✅Check when during the month did a staff take leave as well as how many days they have taken.
