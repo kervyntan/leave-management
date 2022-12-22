@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import Loading from "./Loading";
-import { dateCalculator } from "../dateCalculator";
+import { dateCalculatorExcludeWeekend } from "../dateCalculatorExcludeWeekend";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const CheckStaffLeave = () => {
-  // message: 'API discovery response missing required fields.' error causing first load to break 
+  // neeed to fix Ache cannot see the leave
+  // Label the dates if they are considered weekends
   const colRef = collection(db, "staff");
   // Selected staff from options
   const select = useRef("select");
@@ -39,10 +40,15 @@ const CheckStaffLeave = () => {
             },
           ]);
         });    
-  }, [counterStaff])
+        // use loading dependency here to ensure that data in numberOfLeaves is loaded when DOM is loaded
+        // use counterStaff dependency here to ensure that when this value changes, 
+        // data is loaded in haveTakenLeave
+  }, [counterStaff, loading])
 
   // Display the content upon change in counterStaff value
+  // Change in counterStaff value signifies data is changed in numberOfLeave object
   const haveTakenLeave = useMemo( () => {
+    // find specific staff that has been selected
     const staff = numberOfLeaves.find((obj) => obj.name === select.current.value);
     if (staff) {
     return (
@@ -127,13 +133,16 @@ const CheckStaffLeave = () => {
               }
 
               // Calculate the number of days from the two given dates
-              const diff_in_days = dateCalculator(startDate, endDate);
+              const days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate));
 
               // Check if the selected staff is equal to the one in the loop/check whether staff exists
+              console.log(select.current.value)
+              console.log(staff)
               if (select.current.value === staff) {
+                console.log(numberOfLeaves)
                 if (numberOfLeaves.find((obj) => obj.name === select.current.value)) {
                   // Assign values to the object containing the staff information
-                  numberOfLeaves.find( (obj) => obj.name === select.current.value).numberOfLeave = diff_in_days;
+                  numberOfLeaves.find( (obj) => obj.name === select.current.value).numberOfLeave = days_taken;
                   numberOfLeaves.find( (obj) => obj.name === select.current.value).whichDays = whichDays;
                   // Trigger data to be shown (haveTakenLeave)
                   setCounterStaff(counterStaff + 1);

@@ -207,7 +207,7 @@ const ApplyLeave = () => {
         />
 
         <label htmlFor="end"> End Date </label>
-        <input ref={endDate} id="end" name="duration" type="date" />
+        <input ref={endDate} id="end" name="duration" type="date" required/>
         <Button
           onClick={handleAddLeave}
           class="form-btn"
