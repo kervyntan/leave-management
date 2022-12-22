@@ -137,7 +137,6 @@ const ApplyLeave = () => {
   return (
     <div className="container">
       {loading && <Loading />}
-      <p> Make sure that Saturdays and Sundays are not counted in the leave</p>
       <form className="apply-leave-form">
         {staffList.length === 0 && (
           <>
