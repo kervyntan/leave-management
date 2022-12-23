@@ -9,8 +9,9 @@ const CheckStaffLeave = () => {
   // Need to see th
   const colRef = collection(db, "staff");
   // Selected staff from options
-  const select = useRef("select");
-  const month = useRef("")
+  const selectRef = useRef("select");
+  const monthRef = useRef("")
+  let counter = 0;
   // Current Date
   const current = new Date();
   // First and last day of the current month
@@ -93,7 +94,7 @@ const CheckStaffLeave = () => {
   // Change in counterStaff value signifies data is changed in numberOfLeave object
   const haveTakenLeave = useMemo(() => {
     // find specific staff that has been selected
-    const staff = numberOfLeaves.find((obj) => obj.name === select.current.value);
+    const staff = numberOfLeaves.find((obj) => obj.name === selectRef.current.value);
     if (staff) {
       return (
         <>
@@ -115,9 +116,7 @@ const CheckStaffLeave = () => {
     }
   }, [counterStaff])
 
-  const handleGoogle = (e) => {
-    e.preventDefault();
-
+  const handleGoogle = () => {
     gapi.load("client:auth2", () => {
       gapi.client.init({
         apiKey: API_KEY,
@@ -148,82 +147,98 @@ const CheckStaffLeave = () => {
           request.execute((event, res) => {
             // Array containing all events in the month
             const resArr = JSON.parse(res)[0].result.items;
-            resArr.forEach((item) => {
-              // Name of the staff
-              const staff = item.summary.split("(")[0];
-              // Start and end Date
-              const startDate = (item.start.dateTime.split("T")[0].split(":"))[0];
-              const endDate = (item.end.dateTime.split("T")[0].split(":"))[0];
+            console.log(resArr)
+            // If there are no events in the month
+            if (resArr.length === 0) {
+              numberOfLeaves.find((obj) => obj.name === selectRef.current.value).numberOfLeave = 0;
+              numberOfLeaves.find((obj) => obj.name === selectRef.current.value).whichDays = "None Taken";
+              setCounterStaff(counterStaff + 1);
+            } else {
+              resArr.forEach( (item) => {
+                // Staff if they have taken leave
 
-              // Calculate the number of days from the two given dates
-              const days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate));
-
-              // Start and end day eg. 10/11/12
-              let startDay = parseInt(startDate.split("-")[2]);
-              let endDay = parseInt(endDate.split("-")[2]);
-
-              // Number of days between endDay and startDay
-              // let number_of_days = endDay - startDay;
-              let whichDays = "";
-
-              days_taken.forEach((item) => {
-                if (whichDays === "") {
-                  whichDays = `${whichDays} ${item.getDate()}`
+                // Staff name
+                const staff = item.summary.split("(")[0]
+                
+                // check if the staff constant above is a part of current team/event crawled is not a leave event
+                // Returns -1 if false
+                const isStaff = item.summary.search("Leave")
+                // console.log(staff)
+                console.log(isStaff);
+                // console.log(staffArr)
+                if(isStaff !== -1) {
+                  // Start and end Date
+                  const startDate = (item.start.dateTime.split("T")[0].split(":"))[0];
+                  const endDate = (item.end.dateTime.split("T")[0].split(":"))[0];
+    
+                  // Calculate the number of days from the two given dates
+                  const days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate));
+    
+                  // let number_of_days = endDay - startDay;
+                  let whichDays = "";
+    
+                  days_taken.forEach((item) => {
+                    if (whichDays === "") {
+                      whichDays = `${whichDays} ${item.getDate()}`
+                    } else {
+                      whichDays = `${whichDays}, ${item.getDate()}`;
+                    }
+                  })
+                  // Number of days between endDay and startDay (excl weekends)
+                  const number_of_days_taken = days_taken.length;
+    
+                  // Check if the selected staff is equal to the one in the loop/check whether staff exists
+                  if (selectRef.current.value === staff) {
+                    if (numberOfLeaves.find((obj) => obj.name === selectRef.current.value)) {
+                      // Assign values to the object containing the staff information
+                      numberOfLeaves.find((obj) => obj.name === selectRef.current.value).numberOfLeave = number_of_days_taken;
+                      numberOfLeaves.find((obj) => obj.name === selectRef.current.value).whichDays = whichDays;
+                      // Trigger data to be shown (haveTakenLeave)
+                      setCounterStaff(counterStaff + 1);
+                    } else {
+                      alert("Error loading staff leaves.");
+                    }
+                  } else {
+                    setCounterStaff(counterStaff + 1);
+                  }
                 } else {
-                  whichDays = `${whichDays}, ${item.getDate()}`;
-                }
-              })
-
-              // Check if the selected staff is equal to the one in the loop/check whether staff exists
-
-              const number_of_days_taken = days_taken.length;
-              if (select.current.value === staff) {
-                if (numberOfLeaves.find((obj) => obj.name === select.current.value)) {
-                  // Assign values to the object containing the staff information
-                  numberOfLeaves.find((obj) => obj.name === select.current.value).numberOfLeave = number_of_days_taken;
-                  numberOfLeaves.find((obj) => obj.name === select.current.value).whichDays = whichDays;
-                  // Trigger data to be shown (haveTakenLeave)
+                  numberOfLeaves.find((obj) => obj.name === selectRef.current.value).numberOfLeave = 0;
+                  numberOfLeaves.find((obj) => obj.name === selectRef.current.value).whichDays = "None Taken";
                   setCounterStaff(counterStaff + 1);
-                } else {
-                  alert("Error loading staff leaves.");
                 }
-              } else {
-                setCounterStaff(counterStaff + 1);
+                })
               }
-            });
-
-          });
-        });
-    });
+            })
+        })
+    })
   };
 
   const staffList = staffArr.map((staff, index) => {
     return <option key={index} value={staff}> {staff} </option>;
   });
+
   
-  // Loop through array of months, then assign the current month to be the one that is selected\
-  // getMonth() returns value from 0 - 11 depending on month
   const months = allMonths.map((month, index) => {
-    if (current.getMonth() === index) {
+    // Loop through array of months, then assign the current month to be the one that is selected
+    // getMonth() returns value from 0 - 11 depending on month
+    // if (current.getMonth() === index) {
+    //   return <option key={index} value={month[index]}> {month[index]} </option>;
+    // } else {
       return <option key={index} value={month[index]}> {month[index]} </option>;
-    } else {
-      return <option key={index} value={month[index]}> {month[index]} </option>;
-    } 
   })
 
-  const handleChangeMonthViewLeave = (e) => {
+  const handleChangeMonthViewLeave = () => {
     let key = ""
     allMonths.forEach( (month, index) => {
-      if (month[index] === e.target.value) {
-        console.log(month)
-        console.log(index)
+      console.log(month)
+      if (month[index] === monthRef.current.value) {
         key = index;
       }
     })
     firstDate = getFirstAndLastDay(key)[0]
     lastDate = getFirstAndLastDay(key)[1]
     if (firstDate && lastDate) {
-      handleGoogle(e)
+      handleGoogle()
     } else {
       alert("Please select a month")
     }
@@ -236,21 +251,20 @@ const CheckStaffLeave = () => {
       setShowMonthSelection(false)
     }
 
-    if (month.current.value) {
-      handleGoogle(e);
+    if (monthRef.current.value) {
+      handleChangeMonthViewLeave();
     }
   }
 
   return (
     <div className="container">
       {loading && <Loading />}
-      <p> Add a dropdown selection to allow change of month to view the leave</p>
       <h2 className="page-heading"> Leave Overview: </h2>
       <label name="staff" htmlFor="staff">
         <select
           name="staff"
           id="staff"
-          ref={select}
+          ref={selectRef}
           onChange={handleShowMonths}
         >
           <option defaultValue=""></option>
@@ -263,7 +277,7 @@ const CheckStaffLeave = () => {
         <select
           name="month"
           id="month"
-          ref={month}
+          ref={monthRef}
           onChange={handleChangeMonthViewLeave}
         >
           <option defaultValue=""></option>
