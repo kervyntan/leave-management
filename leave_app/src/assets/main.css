@@ -325,15 +325,15 @@ select#staff {
 
 /* Media Queries */
 @media (max-width : 768px) {
-  table {
+  .staff {
     display : block;
     width : 100%;
     overflow : scroll;
     /* margin : 0 auto; */
   }
 
-  table td.column-1,
-  table th.column-1 {
+  .staff td.column-1,
+  .staff th.column-1 {
     position : sticky;
     left : 0;
     z-index : 2;

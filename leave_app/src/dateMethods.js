@@ -11,15 +11,16 @@ const dateCalculatorExcludeWeekend = (startDate, endDate) => {
     return daysInBetween;
 }
 
-const getFirstAndLastDay = () => {
+// Pass a default value to month parameter
+const getFirstAndLastDay = (month = 0) => {
+    // Need to be able to pass in the month and use that info in the function
     const firstAndLast = []
     const currentMoment = new Date();
-
     // Dates in ISO Format processed to YYYY-MM-DD
-    const fullStringFirstDay = new Date(currentMoment.getFullYear(), currentMoment.getMonth(), 1);
+    const fullStringFirstDay = new Date(currentMoment.getFullYear(), month, 1);
     const currentMonthFirstDay = new Date(fullStringFirstDay.getTime() - (fullStringFirstDay.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
 
-    const fullStringLastDay = new Date(currentMoment.getFullYear(), currentMoment.getMonth() + 1, 0);
+    const fullStringLastDay = new Date(currentMoment.getFullYear(), month + 1, 0);
     const currentMonthLastDay = new Date(fullStringLastDay.getTime() - (fullStringLastDay.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
     firstAndLast.push(currentMonthFirstDay);
     firstAndLast.push(currentMonthLastDay);

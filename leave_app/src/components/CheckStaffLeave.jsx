@@ -6,67 +6,112 @@ import { collection, getDocs } from "firebase/firestore";
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const CheckStaffLeave = () => {
-  // neeed to fix Ache cannot see the leave
+  // Need to see th
   const colRef = collection(db, "staff");
   // Selected staff from options
   const select = useRef("select");
+  const month = useRef("")
+  // Current Date
+  const current = new Date();
+  // First and last day of the current month
+  let firstDate = getFirstAndLastDay()[0];
+  let lastDate = getFirstAndLastDay()[1];
+  const allMonths = [
+    {
+      0: "January"
+    },
+    {
+      1: "February",
+    },
+    {
+      2: "March",
+    },
+    {
+      3: "April",
+    },
+    {
+      4: "May",
+    },
+    {
+      5: "June",
+    },
+    {
+      6: "July",
+    },
+    {
+      7: "August",
+    },
+    {
+      8: "September",
+    },
+    {
+      9: "October",
+    },
+    {
+      10: "November",
+    },
+    {
+      11: "December"
+    },
+  ]
   const [counterStaff, setCounterStaff] = useState(0)
   const [numberOfLeaves, setNumberOfLeaves] = useState([
     { name: "test", numberOfLeave: 1, whichDays: "" },
   ]);
   const [staffArr, setStaffArr] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showMonthSelection, setShowMonthSelection] = useState(false);
   // On load of page, fill staffArr with list of staffs from DB
-  useEffect( () => {
+  useEffect(() => {
     getDocs(colRef)
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            setStaffArr((staffArr) => [...staffArr, doc.data().name]);
-          });
-          setLoading(false)
-        })
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          setStaffArr((staffArr) => [...staffArr, doc.data().name]);
+        });
+        setLoading(false)
+      })
   }, []);
 
   // Loads only when user has selected a new staff member from dropdown
-  useEffect( () => {
-        staffArr.forEach((staff) => {
-          setNumberOfLeaves((numberOfLeaves) => [
-            ...numberOfLeaves,
-            {
-              name: staff,
-              numberOfLeave: 0,
-              whichDays : "None"
-            },
-          ]);
-        });    
-        // use loading dependency here to ensure that data in numberOfLeaves is loaded when DOM is loaded
-        // use counterStaff dependency here to ensure that when this value changes, 
-        // data is loaded in haveTakenLeave
+  useEffect(() => {
+    staffArr.forEach((staff) => {
+      setNumberOfLeaves((numberOfLeaves) => [
+        ...numberOfLeaves,
+        {
+          name: staff,
+          numberOfLeave: 0,
+          whichDays: "None"
+        },
+      ]);
+    });
+    // use loading dependency here to ensure that data in numberOfLeaves is loaded when DOM is loaded
+    // use counterStaff dependency here to ensure that when this value changes, 
+    // data is loaded in haveTakenLeave
   }, [counterStaff, loading])
 
   // Display the content upon change in counterStaff value
   // Change in counterStaff value signifies data is changed in numberOfLeave object
-  const haveTakenLeave = useMemo( () => {
+  const haveTakenLeave = useMemo(() => {
     // find specific staff that has been selected
     const staff = numberOfLeaves.find((obj) => obj.name === select.current.value);
     if (staff) {
-    return (
-        <>  
-            <tr>
-                <td> {staff.numberOfLeave} </td>
-                <td> {staff.whichDays} </td>
-            </tr>
+      return (
+        <>
+          <tr>
+            <td> {staff.numberOfLeave} </td>
+            <td> {staff.whichDays} </td>
+          </tr>
         </>
-        
-    )
+
+      )
     }
     else {
-        return (
-            <>
-                <tr>
-                </tr>
-            </>
-        )
+      return (
+        <>
+          <tr>
+          </tr>
+        </>
+      )
     }
   }, [counterStaff])
 
@@ -92,9 +137,8 @@ const CheckStaffLeave = () => {
         .then(() => {
           // Get all the events in a month
 
-          // First and last day of the current month
-          const firstDate = getFirstAndLastDay()[0];
-          const lastDate = getFirstAndLastDay()[1];
+          console.log(firstDate)
+          console.log(lastDate)
           let request = gapi.client.calendar.events.list({
             calendarId: "primary",
             timeMin: `${firstDate}T00:00:00+08:00`,
@@ -136,12 +180,12 @@ const CheckStaffLeave = () => {
               if (select.current.value === staff) {
                 if (numberOfLeaves.find((obj) => obj.name === select.current.value)) {
                   // Assign values to the object containing the staff information
-                  numberOfLeaves.find( (obj) => obj.name === select.current.value).numberOfLeave = number_of_days_taken;
-                  numberOfLeaves.find( (obj) => obj.name === select.current.value).whichDays = whichDays;
+                  numberOfLeaves.find((obj) => obj.name === select.current.value).numberOfLeave = number_of_days_taken;
+                  numberOfLeaves.find((obj) => obj.name === select.current.value).whichDays = whichDays;
                   // Trigger data to be shown (haveTakenLeave)
                   setCounterStaff(counterStaff + 1);
                 } else {
-                  console.log("Error loading staff leaves.");
+                  alert("Error loading staff leaves.");
                 }
               } else {
                 setCounterStaff(counterStaff + 1);
@@ -156,10 +200,45 @@ const CheckStaffLeave = () => {
   const staffList = staffArr.map((staff, index) => {
     return <option key={index} value={staff}> {staff} </option>;
   });
+  
+  // Loop through array of months, then assign the current month to be the one that is selected\
+  // getMonth() returns value from 0 - 11 depending on month
+  const months = allMonths.map((month, index) => {
+    if (current.getMonth() === index) {
+      return <option key={index} value={month[index]}> {month[index]} </option>;
+    } else {
+      return <option key={index} value={month[index]}> {month[index]} </option>;
+    } 
+  })
 
-  const handleChangeMonthViewLeave = () => {
-    // need to pass the current selected month as a parameter to the getFirstAndLastDay function
-    // handleGoogle()
+  const handleChangeMonthViewLeave = (e) => {
+    let key = ""
+    allMonths.forEach( (month, index) => {
+      if (month[index] === e.target.value) {
+        console.log(month)
+        console.log(index)
+        key = index;
+      }
+    })
+    firstDate = getFirstAndLastDay(key)[0]
+    lastDate = getFirstAndLastDay(key)[1]
+    if (firstDate && lastDate) {
+      handleGoogle(e)
+    } else {
+      alert("Please select a month")
+    }
+  }
+
+  const handleShowMonths = (e) => {
+    if (e.target.value) {
+      setShowMonthSelection(true)
+    } else {
+      setShowMonthSelection(false)
+    }
+
+    if (month.current.value) {
+      handleGoogle(e);
+    }
   }
 
   return (
@@ -172,25 +251,26 @@ const CheckStaffLeave = () => {
           name="staff"
           id="staff"
           ref={select}
-          onChange={handleGoogle}
+          onChange={handleShowMonths}
         >
-        <option defaultValue=""></option>
+          <option defaultValue=""></option>
           {staffList}
         </select>
       </label>
 
+{showMonthSelection &&
       <label name="month" htmlFor="month">
         <select
           name="month"
           id="month"
-          ref={select}
+          ref={month}
           onChange={handleChangeMonthViewLeave}
         >
-        <option defaultValue=""></option>
-          {staffList}
+          <option defaultValue=""></option>
+          {months}
         </select>
       </label>
-
+}
       <table className="staff-table">
         <tbody>
           <tr>
