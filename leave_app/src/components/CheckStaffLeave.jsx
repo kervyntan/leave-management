@@ -4,6 +4,7 @@ import { dateCalculatorExcludeWeekend, getFirstAndLastDay } from "../dateMethods
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
+import { GoogleAuthProvider } from "firebase/auth";
 
 const CheckStaffLeave = () => {
   // Need to see th
@@ -130,9 +131,7 @@ const CheckStaffLeave = () => {
         console.log("Added");
       });
 
-      gapi.auth2
-        .getAuthInstance()
-        .signIn()
+      gapi.auth2.getAuthInstance().signIn()
         .then(() => {
           // Get all the events in a month
 
