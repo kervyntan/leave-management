@@ -24,6 +24,7 @@ const ApplyLeave = () => {
   const [loading, setLoading] = useState(true);
   const [staffList, setStaffList] = useState([]);
   const [canTakeLeave, setCanTakeLeave] = useState(true);
+  const [invalidDuration, setInvalidDuration] = useState(false);
 
   if (loading) {
     document.body.style.overflow = "hidden";
@@ -49,6 +50,11 @@ const ApplyLeave = () => {
 
   const handleAddLeave = (e) => {
     e.preventDefault();
+    const inputEndDate = new Date(endDate.current.value);
+    const inputStartDate = new Date(startDate.current.value);
+    if (inputEndDate < inputStartDate) {
+      setInvalidDuration(true);
+    } else {
     // staff name
     const staffName = name.current.value;
     const docRef = doc(db, "staff", staffName);
@@ -135,7 +141,7 @@ const ApplyLeave = () => {
           })
         }
       })
-
+    }
   };
 
   const staffNames = staffList.map((staff) => {
@@ -154,6 +160,17 @@ const ApplyLeave = () => {
         title="Error adding staff."
       >
         The staff you selected has 0 of this leave left. Please try again with another type of leave.
+        <br />
+        Click away to continue.
+      </Modal>
+
+      <Modal
+        centered
+        opened={invalidDuration}
+        onClose={() => setInvalidDuration(false)}
+        title="Error in applying leave."
+      >
+        End Date must be after Start Date (vice-versa).
         <br />
         Click away to continue.
       </Modal>
@@ -190,6 +207,7 @@ const ApplyLeave = () => {
           placeholder="Type of Leave: "
           required
         >
+          {/* Cannot hardcode */}
           <option value="Annual"> Annual </option>
           <option value="Compassionate"> Compassionate </option>
           <option value="No_Pay"> No Pay </option>

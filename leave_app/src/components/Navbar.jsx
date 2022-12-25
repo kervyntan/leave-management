@@ -92,9 +92,9 @@ const Navbar = () => {
       <Link to="/checkstaffleave" className={selectedTab.checkStaffLeave ?  "selected" : "" }>
         Check Staff
       </Link>
-      {/* <Link to="/settings" className={selectedTab.settings ?  "selected" : "" }>
+      <Link to="/settings" className={selectedTab.settings ?  "selected" : "" }>
         Settings
-      </Link> */}
+      </Link>
     </div>
   );
 };

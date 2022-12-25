@@ -153,6 +153,12 @@ select#month {
   width : 100%;
 }
 
+/* Settings Page */
+.mantine-Checkbox-label {
+  color : red;
+}
+
+
 /* Loading */
 .loading {
     position: fixed;
