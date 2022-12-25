@@ -20,11 +20,13 @@ const ApplyLeave = () => {
   const name = useRef("name");
   const leave = useRef("leave");
   let currentLeave = "";
-  const colRef = collection(db, "staff");
+  const colRefStaff = collection(db, "staff");
+  const colRefLeaveTypes = collection(db, "leaveTypes");
   const [loading, setLoading] = useState(true);
   const [staffList, setStaffList] = useState([]);
   const [canTakeLeave, setCanTakeLeave] = useState(true);
   const [invalidDuration, setInvalidDuration] = useState(false);
+  const [leaveTypes, setLeaveTypes] = useState([])
 
   if (loading) {
     document.body.style.overflow = "hidden";
@@ -34,7 +36,7 @@ const ApplyLeave = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      getDocs(colRef)
+      getDocs(colRefStaff)
         .then((querySnapshot) => {
           // console.log(querySnapshot.size)
           querySnapshot.forEach((doc) => {
@@ -46,6 +48,21 @@ const ApplyLeave = () => {
           setLoading(false);
         });
     }, 500);
+  }, []);
+  
+  // Need to fix Annual leave classifed as undefined
+  useEffect( () => {
+    setTimeout( () => {
+      getDocs(colRefLeaveTypes)
+      .then( (querySnapshot) => {
+          querySnapshot.forEach( (doc) => {
+            setLeaveTypes((leaveTypes) => [...leaveTypes, doc.data().leaveType])
+          })
+      })
+      .then( () => {
+        setLoading(false);
+      })
+    }, 500)
   }, []);
 
   const handleAddLeave = (e) => {
@@ -148,7 +165,13 @@ const ApplyLeave = () => {
     return <option value={staff}> {staff} </option>;
   });
 
+  const typesOfLeave = leaveTypes.map( (leave) => {
+    return <option value={leave}> {leave} </option>
+  })
+
   console.log(staffNames);
+  console.log(typesOfLeave)
+  console.log(leaveTypes)
 
   return (
     <div className="container">
@@ -208,11 +231,7 @@ const ApplyLeave = () => {
           required
         >
           {/* Cannot hardcode */}
-          <option value="Annual"> Annual </option>
-          <option value="Compassionate"> Compassionate </option>
-          <option value="No_Pay"> No Pay </option>
-          <option value="Paternity"> Paternity </option>
-          <option value="Maternity"> Maternity </option>
+          {typesOfLeave}
         </select>
 
         <label htmlFor="start"> Start Date </label>
