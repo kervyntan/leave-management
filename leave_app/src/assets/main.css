@@ -153,9 +153,19 @@ select#month {
   width : 100%;
 }
 
+.leave-overview label {
+  color : var(--clr-black);
+}
+
+.leave-overview select {
+  margin : 20px auto;
+}
+
 /* Settings Page */
-.mantine-Checkbox-label {
-  color : red;
+.mantine-InputWrapper-label.mantine-ittua2 {
+  color : var(--clr-text);
+  font-weight: bold;
+  margin-bottom : 20px;
 }
 
 
@@ -349,5 +359,9 @@ select#month {
 
   .container {
     padding-inline : 20px;
+  }
+
+  .nav {
+    font-size: 0.8rem;
   }
 }

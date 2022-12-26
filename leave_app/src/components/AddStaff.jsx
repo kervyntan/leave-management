@@ -41,6 +41,8 @@ const AddStaff = () => {
   };
 
   return (
+        // Reflect the leave that is fetch from db
+        // And add/remove the inputs
     <div className="container">
       <Modal
         centered

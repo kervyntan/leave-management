@@ -256,10 +256,11 @@ const CheckStaffLeave = () => {
   }
 
   return (
-    <div className="container">
+    <div className="container leave-overview">
       {loading && <Loading />}
       <h2 className="page-heading"> Leave Overview: </h2>
       <label name="staff" htmlFor="staff">
+        Staff: 
         <select
           name="staff"
           id="staff"
@@ -273,6 +274,7 @@ const CheckStaffLeave = () => {
 
 {showMonthSelection &&
       <label name="month" htmlFor="month">
+        Month:
         <select
           name="month"
           id="month"
@@ -284,6 +286,7 @@ const CheckStaffLeave = () => {
         </select>
       </label>
 }
+
       <table className="staff-table">
         <tbody>
           <tr>

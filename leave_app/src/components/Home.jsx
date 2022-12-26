@@ -138,6 +138,7 @@ const Home = () => {
   }
 
   return (
+    // Reflect the leave that is fetch from db
     <>
       {loading && <Loading />}
       <Modal
