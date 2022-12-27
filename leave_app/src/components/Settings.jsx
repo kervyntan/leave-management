@@ -23,12 +23,21 @@ const Settings = () => {
     }
 
     useEffect ( () => {
-        onSnapshot(colShowLeaveTypesRef, (snapshot) => {
-            snapshot.forEach( doc => {
-                setChecked(doc.data())
+        // onSnapshot(colShowLeaveTypesRef, (snapshot) => {
+        //     snapshot.forEach( doc => {
+        //         setChecked(doc.data())
+        //     })
+        //     setLoading(false);
+        // })
+        getDoc(docShowLeaveTypesRef)
+            .then((doc) => {
+                setChecked(doc.data()
+                );
             })
-            setLoading(false);
-        })
+            // use this then to catch when data is fetched**
+            .then(() => {
+                setLoading(false);
+            });
     }, [])
 
     useEffect ( () => {
@@ -40,6 +49,7 @@ const Settings = () => {
             [leaveToBeAdded.current.value] : true
         }, { merge: true })
             .then(() => {
+                console.log("Success")
                 window.location.reload()
             })
             .catch((error) => {
