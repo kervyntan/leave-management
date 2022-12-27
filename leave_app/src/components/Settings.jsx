@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Button from "./Button"
 import Loading from './Loading';
 import { Checkbox, Paper, Input } from '@mantine/core';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const Settings = () => {
@@ -12,11 +12,9 @@ const Settings = () => {
     // Need a log in page for this?
     const leaveToBeAdded = useRef("")
     const colLeaveTypeRef = collection(db, "leaveTypes")
+    const docShowLeaveTypesRef = doc(db, "showLeaveTypes", "showLeaveTypes")
     const [loading, setLoading] = useState(true);
     const [checked, setChecked] = useState({});
-    const [catcher, setCatcher] = useState({});
-    // const [counter, setCounter] = useState(0);
-    let counter = 0;
     if (loading) {
         document.body.style.overflow = "hidden";
     } else {
@@ -38,6 +36,10 @@ const Settings = () => {
             });
     }, [])
 
+    useEffect ( () => {
+        console.log(checked)
+    }, [checked])
+
     const handleAddLeaveType = () => {
         addDoc(colLeaveTypeRef, {
             leaveType: leaveToBeAdded.current.value
@@ -50,6 +52,17 @@ const Settings = () => {
                 console.log(error)
             })
     }
+
+    const updateShowLeaveTypes = () => {
+        setDoc(docShowLeaveTypesRef, checked)
+        .then( () => {
+            console.log("Success")
+        })
+        .catch( (error) => {
+            console.log(error);
+        })
+    }
+
     const checkboxKeys = Object.keys(checked);
     const checkboxList = checkboxKeys.map((checkbox) => {
         return <Checkbox checked={checked[checkbox]} label={checkbox.toUpperCase()}
@@ -66,6 +79,7 @@ const Settings = () => {
             {/* <Button onClick={addLeave} text="I test" /> */}
             <Paper shadow="xl" p="md" m="md" style={{ backgroundColor: "#4059AD" }}>
                 {checkboxList}
+                <Button onClick={updateShowLeaveTypes} text="Save" className="btn" />
             </Paper>
             <Paper shadow="xl" p="md" m="md" style={{ backgroundColor: "#4059AD" }}>
                 <Input.Wrapper p="xs" label="Add Leave Type: eg. Annual">
