@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Button from "./Button"
 import Loading from './Loading';
 import { Checkbox, Paper, Input } from '@mantine/core';
-import { collection, addDoc, getDocs, setDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDoc, getDocs, setDoc, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const Settings = () => {
@@ -11,8 +11,9 @@ const Settings = () => {
     // Edit what types of leave should be shown to the user (Checkbox style, so if checked then true)
     // Need a log in page for this?
     const leaveToBeAdded = useRef("")
-    const colLeaveTypeRef = collection(db, "leaveTypes")
+    // const colLeaveTypeRef = collection(db, "leaveTypes")
     const docShowLeaveTypesRef = doc(db, "showLeaveTypes", "showLeaveTypes")
+    const colShowLeaveTypesRef = collection(db, "showLeaveTypes")
     const [loading, setLoading] = useState(true);
     const [checked, setChecked] = useState({});
     if (loading) {
@@ -22,18 +23,12 @@ const Settings = () => {
     }
 
     useEffect ( () => {
-        getDocs(colLeaveTypeRef)
-            .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                setChecked((prev) => {
-                    return {...prev, [doc.data().leaveType] : true }
-                })
-                });
+        onSnapshot(colShowLeaveTypesRef, (snapshot) => {
+            snapshot.forEach( doc => {
+                setChecked(doc.data())
             })
-            // use this then to catch when data is fetched**
-            .then(() => {
-                setLoading(false);
-            });
+            setLoading(false);
+        })
     }, [])
 
     useEffect ( () => {
@@ -41,11 +36,10 @@ const Settings = () => {
     }, [checked])
 
     const handleAddLeaveType = () => {
-        addDoc(colLeaveTypeRef, {
-            leaveType: leaveToBeAdded.current.value
+        setDoc(docShowLeaveTypesRef, {
+            [leaveToBeAdded.current.value] : true
         }, { merge: true })
             .then(() => {
-                console.log("Success")
                 window.location.reload()
             })
             .catch((error) => {
