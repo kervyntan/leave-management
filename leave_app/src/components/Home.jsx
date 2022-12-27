@@ -62,7 +62,6 @@ const Home = () => {
     setOpened(true);
     setStaffToDelete(e.target.className.split("+")[0]);
   }
-  
   const compareNames = (a,b) => {
     if ( a.name < b.name ) {
       return -1;

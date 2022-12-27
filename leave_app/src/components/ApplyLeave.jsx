@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Button from "./Button";
 import Loading from "./Loading";
+import { compareNames } from "../compareNames";
 import { Modal } from "@mantine/core";
 import { dateCalculatorExcludeWeekend } from "../dateMethods";
 import { db } from "../firebase";
@@ -21,7 +22,7 @@ const ApplyLeave = () => {
   const leave = useRef("leave");
   let currentLeave = "";
   const colRefStaff = collection(db, "staff");
-  const colRefLeaveTypes = collection(db, "leaveTypes");
+  const docRefLeaveTypes = doc(db, "showLeaveTypes", "showLeaveTypes");
   const [loading, setLoading] = useState(true);
   const [staffList, setStaffList] = useState([]);
   const [canTakeLeave, setCanTakeLeave] = useState(true);
@@ -50,14 +51,17 @@ const ApplyLeave = () => {
     }, 500);
   }, []);
   
-  // Need to fix Annual leave classifed as undefined
   useEffect( () => {
     setTimeout( () => {
-      getDocs(colRefLeaveTypes)
-      .then( (querySnapshot) => {
-          querySnapshot.forEach( (doc) => {
-            setLeaveTypes((leaveTypes) => [...leaveTypes, doc.data().leaveType])
-          })
+      getDoc(docRefLeaveTypes)
+      .then( (doc) => {
+        const keys = Object.keys(doc.data());
+        keys.forEach( (leaveType) => {
+          if (doc.data()[leaveType]) {
+            setLeaveTypes((leaveTypes) => [...leaveTypes, leaveType])
+          }
+        })
+        // sort types of leaves lexicographically
       })
       .then( () => {
         setLoading(false);
@@ -165,13 +169,9 @@ const ApplyLeave = () => {
     return <option value={staff}> {staff} </option>;
   });
 
-  const typesOfLeave = leaveTypes.map( (leave) => {
+  const typesOfLeave = leaveTypes.sort(compareNames).map( (leave) => {
     return <option value={leave}> {leave} </option>
   })
-
-  console.log(staffNames);
-  console.log(typesOfLeave)
-  console.log(leaveTypes)
 
   return (
     <div className="container">

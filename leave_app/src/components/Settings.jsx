@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Button from "./Button"
 import Loading from './Loading';
+import { compareNames } from "../compareNames";
 import { Checkbox, Paper, Input } from '@mantine/core';
 import { collection, addDoc, getDoc, getDocs, setDoc, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -31,8 +32,7 @@ const Settings = () => {
         // })
         getDoc(docShowLeaveTypesRef)
             .then((doc) => {
-                setChecked(doc.data()
-                );
+                setChecked(doc.data());
             })
             // use this then to catch when data is fetched**
             .then(() => {
@@ -43,6 +43,7 @@ const Settings = () => {
     useEffect ( () => {
         console.log(checked)
     }, [checked])
+
 
     const handleAddLeaveType = () => {
         setDoc(docShowLeaveTypesRef, {
@@ -68,7 +69,7 @@ const Settings = () => {
     }
 
     const checkboxKeys = Object.keys(checked);
-    const checkboxList = checkboxKeys.map((checkbox) => {
+    const checkboxList = checkboxKeys.sort(compareNames).map((checkbox) => {
         return <Checkbox checked={checked[checkbox]} label={checkbox.toUpperCase()}
             onClick={() => setChecked({ ...checked, [checkbox]: !checked[checkbox] })}
         />

@@ -1,26 +1,43 @@
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
+import Loading from "./Loading";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "@mantine/core";
 import { db } from "../firebase";
-import { collection, doc, setDoc, addDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc } from "firebase/firestore";
 
 const AddStaff = () => {
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [errorModal, setErrorModal] = useState(false);
-  const [formValues, setFormValues] = useState({
-    name: "",
-    annual: 14,
-    compassionate: 3,
-    noPay: 14,
-    maternity: 14,
-    paternity: "",
-  });
+  const [formValues, setFormValues] = useState({});
   const [leaveSubmission, setLeaveSubmission] = useState({})
+  const docShowLeaveTypesRef = doc(db, "showLeaveTypes", "showLeaveTypes")
   useEffect ( () => {
     console.log(leaveSubmission)
   }, [leaveSubmission])
+
+  useEffect ( () => {
+    getDoc(docShowLeaveTypesRef)
+    .then( (doc) => {
+      const keys = Object.keys(doc.data());
+      let obj = {
+        name : ""
+      }
+      keys.forEach( (field) => {
+        Object.assign(obj, {
+          [field] : ""
+        })
+      })
+
+      setFormValues(obj);
+    })
+    .then(() => {
+      setLoading(false);
+    })
+  }, [])
+
   const handleAddStaff = (e) => {
     e.preventDefault();
     // check if any of the input fields are empty
@@ -58,18 +75,19 @@ const AddStaff = () => {
     return (
       <>
         <label htmlFor={field}> {formatFieldName}: </label>
-        <input id={field} name={field} placeholder={formValues[field]} onChange={changeHandler} value={formValues[field]} required />
+        {/* condition to show placeholder */}
+        <input id={field} name={field} placeholder={field === "name" ? "Name" : "No. of leave eg. 14"} onChange={changeHandler} value={formValues[field]} required />
       </>
     )
   })
-  console.log(leaveSubmission)
-  console.log(Object.values(leaveSubmission))
-  console.log(Object.values(leaveSubmission).find((val) => val === ""))
 
   return (
     // Reflect the leave that is fetch from db
     // And add/remove the inputs
     <div className="container">
+      {loading 
+      ? <Loading />
+      : <>
       <Modal
         centered
         opened={opened}
@@ -94,6 +112,8 @@ const AddStaff = () => {
         {formFields}
         <Button class="form-btn" text="Add Staff" onClick={handleAddStaff} />
       </form>
+      </> 
+      }
     </div>
   );
 };
