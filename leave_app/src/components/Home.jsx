@@ -14,8 +14,10 @@ import {
 
 const Home = () => {
   // Edit individual values of the leaves in case user keys in wrongly
-  // Edit staff button
-  // turn all the td values into editable inputs
+  // Need to populate all the diff kinds of leave first
+  // then populate for each type of leave, how many does each staff have
+  // When populating a new type of leave, need to make it 0 first
+  // can make the amount of leave you want to populate by default be editable also
   let tableExport = require('table-export');
   const [opened, setOpened] = useState(false);
   const [staffDetails, setStaffDetails] = useState([]);
@@ -114,6 +116,26 @@ const Home = () => {
       </>
     );
   });
+  // loop through the staffDetails array
+  // then loop through the keys of each object in the array
+  // then use that to create the td
+  // console.log(Object.keys(staffDetails[0]))
+  // const staffTest = staffDetails.sort(compareNames).map( (person) => {
+  //   const keys = Object.keys(person);
+
+  //   keys.map( (item, index) => {
+  //     return (
+  //       <>
+  //       <td className={`${item}`}>
+  //         <p className={`${item}_para`}> {person[item]} </p>
+  //       </td>
+  //       <td className="delete">
+  //           <img src={close} className={`${person.name}+ close`} onClick={toggleDeleteStaff} alt="Delete Staff" />
+  //       </td>
+  //       </>
+  //     )
+  //   })
+  // })
 
   const handleDeleteStaff = () => {
     setShowDeleteText(true);
