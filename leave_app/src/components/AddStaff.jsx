@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "@mantine/core";
 import { db } from "../firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc } from "firebase/firestore";
 
 const AddStaff = () => {
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
   const [formValues, setFormValues] = useState({
     name: "",
     annual: 14,
@@ -17,21 +18,21 @@ const AddStaff = () => {
     paternity: "",
   });
   const [leaveSubmission, setLeaveSubmission] = useState({})
-
+  useEffect ( () => {
+    console.log(leaveSubmission)
+  }, [leaveSubmission])
   const handleAddStaff = (e) => {
     e.preventDefault();
-    // ID is the name of staff
-    // ${formValues.name}
-    setDoc(doc(db, "staff", `${formValues.name}`), {
-      name: formValues.name,
-      annual_leave: formValues.annual,
-      compassionate_leave: formValues.compassionate,
-      no_pay_leave: formValues.noPay,
-      paternity_leave: formValues.paternity,
-      maternity_leave: formValues.maternity,
-    });
-    setOpened(true);
-    // navigate("/");
+    // check if any of the input fields are empty
+    if (Object.values(leaveSubmission).find((val) => val === "") === "") {
+       setErrorModal(true);
+    } else {
+      // ID of the document is the name of staff
+      // ${formValues.name}
+      setDoc(doc(db, "staff", `${formValues.name}`), leaveSubmission);
+      setOpened(true);
+      // navigate("/");
+    }
   };
 
   const changeHandler = (e) => {
@@ -39,6 +40,17 @@ const AddStaff = () => {
       ...formValues,
       [e.target.name]: e.target.value,
     });
+    if (e.target.name === "name") {
+      setLeaveSubmission({
+        ...leaveSubmission,
+        [e.target.name] : e.target.value
+      })
+    } else {
+      setLeaveSubmission({
+        ...leaveSubmission,
+        [e.target.name + "_leave"] : e.target.value
+      })
+    }
   };
 
   const formFields = Object.keys(formValues).map((field) => {
@@ -50,6 +62,9 @@ const AddStaff = () => {
       </>
     )
   })
+  console.log(leaveSubmission)
+  console.log(Object.values(leaveSubmission))
+  console.log(Object.values(leaveSubmission).find((val) => val === ""))
 
   return (
     // Reflect the leave that is fetch from db
@@ -62,6 +77,16 @@ const AddStaff = () => {
         title="Successfully added staff!"
       >
         Staff has been added successfully.
+        <br />
+        Click away to continue.
+      </Modal>
+      <Modal
+        centered
+        opened={errorModal}
+        onClose={() => setErrorModal(false)}
+        title="Error adding staff."
+      >
+        Please ensure none of the fields are empty.
         <br />
         Click away to continue.
       </Modal>
