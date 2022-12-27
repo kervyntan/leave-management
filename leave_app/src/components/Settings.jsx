@@ -14,7 +14,6 @@ const Settings = () => {
     const leaveToBeAdded = useRef("")
     // const colLeaveTypeRef = collection(db, "leaveTypes")
     const docShowLeaveTypesRef = doc(db, "showLeaveTypes", "showLeaveTypes")
-    const colShowLeaveTypesRef = collection(db, "showLeaveTypes")
     const [loading, setLoading] = useState(true);
     const [checked, setChecked] = useState({});
     if (loading) {

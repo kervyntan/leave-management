@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Loading from "./Loading";
 import Button from "./Button";
 import JsPDF from 'jspdf';
+import { compareNames } from "../compareNames";
 import close from "../assets/close_icon.png"
 import { Modal } from "@mantine/core";
 import { db } from "../firebase";
@@ -9,7 +10,8 @@ import {
   collection,
   deleteDoc,
   getDocs,
-  doc
+  doc,
+  getDoc
 } from "firebase/firestore";
 
 const Home = () => {
@@ -24,6 +26,8 @@ const Home = () => {
   const [staffToDelete, setStaffToDelete] = useState();
   const [loading, setLoading] = useState(true);
   const [showDeleteText, setShowDeleteText] = useState(false);
+  const [leaveTypes, setLeaveTypes] = useState([])
+  const docShowLeaveTypesRef = doc(db, "showLeaveTypes", "showLeaveTypes")
   const colRef = collection(db, "staff");
   if (loading) {
     document.body.style.overflow = "hidden";
@@ -56,13 +60,30 @@ const Home = () => {
 
         });
     }, 500);
-  }, []);
+  }, [])
+
+  useEffect( () => {
+    getDoc(docShowLeaveTypesRef)
+    .then( (doc) => {
+      // Array of leaves
+      const keys = Object.keys(doc.data());
+      const obj = {}
+      keys.forEach ((leave) => {
+        if (doc.data()[leave]) {
+           setLeaveTypes((leaveType) => [...leaveType, leave]);
+        }
+      })
+    })
+    .then (() => {
+      setLoading(false);
+    })
+  }, [])
 
   const toggleDeleteStaff = (e) => {
     setOpened(true);
     setStaffToDelete(e.target.className.split("+")[0]);
   }
-  const compareNames = (a,b) => {
+  const compareStaff = (a,b) => {
     if ( a.name < b.name ) {
       return -1;
     }
@@ -72,7 +93,7 @@ const Home = () => {
     return 0;
   }
 
-  const staff = staffDetails.sort(compareNames).map((person) => {
+  const staff = staffDetails.sort(compareStaff).map((person) => {
     return (
       <>
         <tr key={Math.random}>
@@ -93,6 +114,11 @@ const Home = () => {
               </p>
             </div>
           </td>
+          <td className="maternity_leave">
+            <div contentEditable suppressContentEditableWarning={true}>
+              <p className="maternity_leave_para">{person.maternity_leave}</p>
+            </div>
+          </td>
           <td className="no_pay_leave">
             <div contentEditable suppressContentEditableWarning={true}>
               <p className="no_pay_leave_para">{person.no_pay_leave}</p>
@@ -101,11 +127,6 @@ const Home = () => {
           <td className="paternity_leave">
             <div contentEditable suppressContentEditableWarning={true}>
               <p className="paternity_leave_para">{person.paternity_leave}</p>
-            </div>
-          </td>
-          <td className="maternity_leave">
-            <div contentEditable suppressContentEditableWarning={true}>
-              <p className="maternity_leave_para">{person.maternity_leave}</p>
             </div>
           </td>
           <td className="delete">
@@ -146,6 +167,14 @@ const Home = () => {
       })
   }
 
+  const tableHeaders = leaveTypes.sort(compareNames).map( (leave) => {
+    return (
+      <th> {leave} </th>
+    )
+  })
+  
+  // Need to dynamically show the leave 
+
   const generateExcel = () => {
     tableExport('table-staff', 'test', 'xls')
   }
@@ -161,7 +190,12 @@ const Home = () => {
   return (
     // Reflect the leave that is fetch from db
     <>
-      {loading && <Loading />}
+    <Button class="generate-excel-btn btn" text="Export as Excel" onClick={generateExcel} />
+    <Button class="generate-pdf-btn btn" text="Export as PDF" onClick={generatePDF} />
+    <h2 className="page-heading"> List of Staff: </h2>
+    {loading 
+      ? <Loading />
+      : <>
       <Modal
         centered
         opened={opened}
@@ -173,22 +207,17 @@ const Home = () => {
         <Button class="delete-staff-btn btn" text="Delete Staff" onClick={handleDeleteStaff} />
         {showDeleteText && <p> Entry is being deleted. Please wait for the page to reload. </p>}
       </Modal>
-      <Button class="generate-excel-btn btn" text="Export as Excel" onClick={generateExcel} />
-      <Button class="generate-pdf-btn btn" text="Export as PDF" onClick={generatePDF} />
-      <h2 className="page-heading"> List of Staff: </h2>
       <table className="staff" id="table-staff">
         <tbody>
           <tr>
             <th className="column-1"> Name </th>
-            <th> Annual </th>
-            <th> Compassionate </th>
-            <th> No Pay </th>
-            <th> Paternity </th>
-            <th> Maternity </th>
+            {tableHeaders}
           </tr>
           {staff}
         </tbody>
       </table>
+    </>
+    }
     </>
   );
 };
