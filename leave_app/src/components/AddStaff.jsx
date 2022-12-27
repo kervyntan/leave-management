@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import Loading from "./Loading";
+import { compareNames } from "../compareNames";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "@mantine/core";
 import { db } from "../firebase";
@@ -22,9 +23,7 @@ const AddStaff = () => {
     getDoc(docShowLeaveTypesRef)
     .then( (doc) => {
       const keys = Object.keys(doc.data());
-      let obj = {
-        name : ""
-      }
+      let obj = {}
       keys.forEach( (field) => {
         Object.assign(obj, {
           [field] : ""
@@ -70,13 +69,14 @@ const AddStaff = () => {
     }
   };
 
-  const formFields = Object.keys(formValues).map((field) => {
+  // Slice to get 
+  const formFields = Object.keys(formValues).sort(compareNames).map((field) => {
     const formatFieldName = field.charAt(0).toUpperCase() + field.slice(1);
     return (
       <>
         <label htmlFor={field}> {formatFieldName}: </label>
         {/* condition to show placeholder */}
-        <input id={field} name={field} placeholder={field === "name" ? "Name" : "No. of leave eg. 14"} onChange={changeHandler} value={formValues[field]} required />
+        <input id={field} name={field} placeholder={"No. of leave eg. 14"} onChange={changeHandler} value={formValues[field]} required />
       </>
     )
   })
@@ -109,6 +109,10 @@ const AddStaff = () => {
         Click away to continue.
       </Modal>
       <form className="add-staff-form">
+      <label htmlFor="name"> Name: </label>
+        {/* condition to show placeholder */}
+        <input id="name" name="name" placeholder="Name: " onChange={changeHandler} value={formValues.name} required />
+
         {formFields}
         <Button class="form-btn" text="Add Staff" onClick={handleAddStaff} />
       </form>
