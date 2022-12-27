@@ -25,9 +25,14 @@ const AddStaff = () => {
       const keys = Object.keys(doc.data());
       let obj = {}
       keys.forEach( (field) => {
+        // If the leave in db returns as true,
+        // leave is in use
+        // otherwise don't let users add that particular leave type to staff
+        if (doc.data()[field]) {
         Object.assign(obj, {
           [field] : ""
         })
+      }
       })
 
       setFormValues(obj);
