@@ -136,26 +136,6 @@ const Home = () => {
       </>
     );
   });
-  // loop through the staffDetails array
-  // then loop through the keys of each object in the array
-  // then use that to create the td
-  // console.log(Object.keys(staffDetails[0]))
-  // const staffTest = staffDetails.sort(compareNames).map( (person) => {
-  //   const keys = Object.keys(person);
-
-  //   keys.map( (item, index) => {
-  //     return (
-  //       <>
-  //       <td className={`${item}`}>
-  //         <p className={`${item}_para`}> {person[item]} </p>
-  //       </td>
-  //       <td className="delete">
-  //           <img src={close} className={`${person.name}+ close`} onClick={toggleDeleteStaff} alt="Delete Staff" />
-  //       </td>
-  //       </>
-  //     )
-  //   })
-  // })
 
   const handleDeleteStaff = () => {
     setShowDeleteText(true);
