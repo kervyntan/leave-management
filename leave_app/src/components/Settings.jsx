@@ -23,12 +23,6 @@ const Settings = () => {
     }
 
     useEffect ( () => {
-        // onSnapshot(colShowLeaveTypesRef, (snapshot) => {
-        //     snapshot.forEach( doc => {
-        //         setChecked(doc.data())
-        //     })
-        //     setLoading(false);
-        // })
         getDoc(docShowLeaveTypesRef)
             .then((doc) => {
                 setChecked(doc.data());
@@ -53,7 +47,7 @@ const Settings = () => {
                 window.location.reload()
             })
             .catch((error) => {
-                console.log(error)
+                alert(error)
             })
     }
 
@@ -63,7 +57,7 @@ const Settings = () => {
             console.log("Success")
         })
         .catch( (error) => {
-            console.log(error);
+            alert(error);
         })
     }
 

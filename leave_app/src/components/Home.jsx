@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Loading from "./Loading";
 import Button from "./Button";
 import JsPDF from 'jspdf';
-import { compareNames } from "../compareNames";
+import { compareNames, compareStaff } from "../compareNames";
 import close from "../assets/close_icon.png"
 import { Modal } from "@mantine/core";
 import { db } from "../firebase";
@@ -27,6 +27,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [showDeleteText, setShowDeleteText] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([])
+  // const [leaveTypesFormatted, setLeaveTypesFormatted] = useState([])
+  let leaveTypesFormatted = []
   const [staffKeys, setStaffKeys] = useState([])
   const docShowLeaveTypesRef = doc(db, "showLeaveTypes", "showLeaveTypes")
   const colRef = collection(db, "staff");
@@ -35,127 +37,97 @@ const Home = () => {
   } else {
     document.body.style.overflow = "unset";
   }
-
-  useEffect(() => {
-    setTimeout(() => {
-      getDocs(colRef)
-        .then((querySnapshot) => {
-          // console.log(querySnapshot.size)
-          querySnapshot.forEach((doc) => {
-            console.log(doc.data())
-            console.log(Object.keys(doc.data()))
-            // Get all keys except the name key of the staffDetails (alredy hardcoded)
-            setStaffKeys(Object.keys(doc.data()).filter((item) => item !== "name").sort(compareNames))
-            setStaffDetails((staffDetails) => [
-              // doc.data() contains all the information about each staff
-              // each document represents one staff
-              ...staffDetails, doc.data()
-            ]); 
-          });
-          // console.log(Object.keys(staffDetails[0]))
-          // setStaffKeys(Object.keys(staffDetails[0]))
-        })
-        // use this then to catch when data is fetched**
-        .then(() => {
-          // setStaffKeys(Object.keys(staffDetails[0]))
-          setLoading(false);
-        });
-    }, 500);
-  }, [])
+  // Fix bug where less than the 5 standard leaves are chosen
 
   useEffect( () => {
     getDoc(docShowLeaveTypesRef)
     .then( (doc) => {
       // Array of leaves
       const keys = Object.keys(doc.data());
-      const obj = {}
       keys.forEach ((leave) => {
+        // If the leave is set to True, add it to the array
         if (doc.data()[leave]) {
            setLeaveTypes((leaveType) => [...leaveType, leave]);
+          //  setLeaveTypesFormatted((leaveType) => [...leaveType, leave.toLowerCase() + "_leave"])
+           leaveTypesFormatted = [...leaveTypesFormatted, leave.toLowerCase() + "_leave"]
         }
       })
+  
     })
     .then (() => {
-      setLoading(false);
+      getDocs(colRef)
+        .then((querySnapshot) => {
+          // Make sure each staff has every type of leave in the object
+          // somehow populate all doc.data() with all the true leave types
+
+          // console.log(querySnapshot.size)
+          querySnapshot.forEach((doc) => {
+            // Compare keys of each doc.data() with those of the full list of leaveTypes
+            // whichever ones are missing
+            const keys = Object.keys(doc.data());
+            // Compare keys of all the staff info fetched
+            const uniqueLeaves = keys.filter( (item) => leaveTypesFormatted.indexOf(item) === -1)
+            const uniqueLeaves2 = leaveTypesFormatted.filter( (item) => keys.indexOf(item) === -1)
+            // Contains all the types of leaves that the specific person doesn't have in their object
+            const totalUniqueLeaves = uniqueLeaves.concat(uniqueLeaves2);
+
+            let appendObj = doc.data();
+            if (totalUniqueLeaves.length !== 1) { 
+              totalUniqueLeaves.forEach( (item) => {
+                // If item is a type of leave, assign it 0   
+                console.log(item)
+                console.log(leaveTypes)
+              //  if ((leaveTypes.find(val => val === item)) === true) {
+              // if (leaveTypes.find(val => val === item)) {           
+                if (item !== "name") {
+                  appendObj = {...appendObj, 
+                    [item] : 0
+                  }}
+              })
+          }
+            console.log(appendObj)
+            setStaffKeys(Object.keys(appendObj).filter((item) => item !== "name").sort(compareNames))
+            setStaffDetails((staffDetails) => [
+              // doc.data() contains all the information about each staff
+              // each document represents one staff
+              ...staffDetails, appendObj
+            ]); 
+          });
+        })
     })
+        .then( () => {
+          setLoading(false);
+        })
+        .catch( (error) => {
+          alert(error)
+        })
   }, [])
 
   const toggleDeleteStaff = (e) => {
     setOpened(true);
     setStaffToDelete(e.target.className.split("+")[0]);
   }
-  const compareStaff = (a,b) => {
-    if ( a.name < b.name ) {
-      return -1;
-    }
-    if ( a.name > b.name ) {
-      return 1;
-    }
-    return 0;
-  }
-console.log(staffKeys)
-console.log(leaveTypes)
-// Find a way to fetch data without hitting this error
+
   const staff = staffDetails.sort(compareStaff).map((person) => {
+    // Creates the table data
     const staffData = staffKeys.map((item) => {
-      let amtOfLeave = person[item];
-      // If amount of leave given to that person is not recorded/empty
-      // eg. the person doesn't have leave in that category
-      if (amtOfLeave) { 
         return (
           <>
             <td className={item}>
-              <p className={`${item}_para`}> {amtOfLeave} </p>
+              <p className={`${item}_para`}> {person[item]} </p>
             </td>
           </>
         )
-        } else {
-          return (
-            <>
-              <td className={item}>
-                <p className={`${item}_para`}> 0 </p>
-              </td>
-            </>
-          )
-        }
     })
-    // console.log(staffTest)
     return (
       <>
         <tr key={Math.random}>
           <td className="name column-1">
-            <div contentEditable suppressContentEditableWarning={true}>
+            <div>
               <p className="name_para">{person.name}</p>
             </div>
           </td>
           {staffData}
-          {/* <td className="annual_leave">
-            <div contentEditable suppressContentEditableWarning={true}>
-              <p className="annual_leave_para">{person.annual_leave}</p>
-            </div>
-          </td>
-          <td className="compassionate_leave">
-            <div contentEditable suppressContentEditableWarning={true}>
-              <p className="compassionate_leave_para">
-                {person.compassionate_leave}
-              </p>
-            </div>
-          </td>
-          <td className="maternity_leave">
-            <div contentEditable suppressContentEditableWarning={true}>
-              <p className="maternity_leave_para">{person.maternity_leave}</p>
-            </div>
-          </td>
-          <td className="no_pay_leave">
-            <div contentEditable suppressContentEditableWarning={true}>
-              <p className="no_pay_leave_para">{person.no_pay_leave}</p>
-            </div>
-          </td>
-          <td className="paternity_leave">
-            <div contentEditable suppressContentEditableWarning={true}>
-              <p className="paternity_leave_para">{person.paternity_leave}</p>
-            </div>
-          </td> */}
           <td className="delete">
             <img src={close} className={`${person.name}+ close`} onClick={toggleDeleteStaff} alt="Delete Staff" />
           </td>
@@ -164,14 +136,10 @@ console.log(leaveTypes)
     );
   });
 
-  // each staff object
-  // name : 
-  // ..._leave
   const handleDeleteStaff = () => {
     setShowDeleteText(true);
     deleteDoc(doc(db, "staff", staffToDelete))
       .then(() => {
-        console.log("Staff Deleted.")
         setShowDeleteText(false);
         window.location.reload();
       })
@@ -196,9 +164,7 @@ console.log(leaveTypes)
       report.save('staff.pdf');
     })
   }
-  console.log(staffDetails)
   return (
-    // Reflect the leave that is fetch from db
     <>
     <Button class="generate-excel-btn btn" text="Export as Excel" onClick={generateExcel} />
     <Button class="generate-pdf-btn btn" text="Export as PDF" onClick={generatePDF} />

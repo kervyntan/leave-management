@@ -7,6 +7,7 @@ import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 import { GoogleAuthProvider } from "firebase/auth";
 
 const CheckStaffLeave = () => {
+  // Need to fix dates shown static
   // Need to see th
   const colRef = collection(db, "staff");
   // Selected staff from options
@@ -157,7 +158,9 @@ const CheckStaffLeave = () => {
                 // Staff if they have taken leave
 
                 // Staff name
+                console.log(resArr)
                 const staff = item.summary.split("(")[0]
+                console.log(staff)
                 
                 // check if the staff constant above is a part of current team/event crawled is not a leave event
                 // Returns -1 if false

@@ -57,10 +57,6 @@ const AddStaff = () => {
   };
 
   const changeHandler = (e) => {
-      // setFormValues({
-      //   ...formValues,
-      //   [e.target.name]: e.target.value,
-      // });
     if (e.target.name === "name") {
       setLeaveSubmission({
         ...leaveSubmission,
@@ -75,10 +71,10 @@ const AddStaff = () => {
   };
 
   const formFields = Object.keys(formValues).sort(compareNames).map((field) => {
-    // const formatFieldName = field.split("_")[0].charAt(0).toUpperCase() + field.split("_").slice(1);
+    const formatFieldName = field.split("_")[0].charAt(0).toUpperCase() + field.split("_")[0].slice(1);
     return (
       <>
-        <label htmlFor={field}> {field}: </label>
+        <label htmlFor={field}> {formatFieldName}: </label>
         {/* condition to show placeholder */}
         <input id={field} name={field} placeholder={"No. of leave eg. 14"} onChange={changeHandler} value={leaveSubmission[field]} required />
       </>
