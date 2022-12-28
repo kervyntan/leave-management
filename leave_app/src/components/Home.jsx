@@ -27,6 +27,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [showDeleteText, setShowDeleteText] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([])
+  const [staffKeys, setStaffKeys] = useState([])
   const docShowLeaveTypesRef = doc(db, "showLeaveTypes", "showLeaveTypes")
   const colRef = collection(db, "staff");
   if (loading) {
@@ -41,23 +42,23 @@ const Home = () => {
         .then((querySnapshot) => {
           // console.log(querySnapshot.size)
           querySnapshot.forEach((doc) => {
+            console.log(doc.data())
+            console.log(Object.keys(doc.data()))
+            // Get all keys except the name key of the staffDetails (alredy hardcoded)
+            setStaffKeys(Object.keys(doc.data()).filter((item) => item !== "name").sort(compareNames))
             setStaffDetails((staffDetails) => [
-              ...staffDetails,
-              {
-                name: doc.data().name,
-                annual_leave: doc.data().annual_leave,
-                compassionate_leave: doc.data().compassionate_leave,
-                no_pay_leave: doc.data().no_pay_leave,
-                paternity_leave: doc.data().paternity_leave,
-                maternity_leave: doc.data().maternity_leave,
-              },
-            ]);
+              // doc.data() contains all the information about each staff
+              // each document represents one staff
+              ...staffDetails, doc.data()
+            ]); 
           });
+          // console.log(Object.keys(staffDetails[0]))
+          // setStaffKeys(Object.keys(staffDetails[0]))
         })
         // use this then to catch when data is fetched**
         .then(() => {
+          // setStaffKeys(Object.keys(staffDetails[0]))
           setLoading(false);
-
         });
     }, 500);
   }, [])
@@ -92,8 +93,30 @@ const Home = () => {
     }
     return 0;
   }
-
+  // const staffTest = staffKeys.map((item) => {
+  //   if (item === "name") {
+  //     return (
+  //       <>
+  //         <td className={item}>
+  //           <p className={`${item} + "_para"`}> {person[item]} </p>
+  //         </td>
+  //       </>
+  //     )
+  //   }
+  // })
+console.log(staffKeys)
+// Find a way to fetch data without hitting this error
   const staff = staffDetails.sort(compareStaff).map((person) => {
+    const staffTest = staffKeys.map((item) => {
+        return (
+          <>
+            <td className={item}>
+              <p className={`${item} + "_para"`}> {person[item]} </p>
+            </td>
+          </>
+        )
+    })
+    // console.log(staffTest)
     return (
       <>
         <tr key={Math.random}>
@@ -102,7 +125,8 @@ const Home = () => {
               <p className="name_para">{person.name}</p>
             </div>
           </td>
-          <td className="annual_leave">
+          {staffTest}
+          {/* <td className="annual_leave">
             <div contentEditable suppressContentEditableWarning={true}>
               <p className="annual_leave_para">{person.annual_leave}</p>
             </div>
@@ -128,7 +152,7 @@ const Home = () => {
             <div contentEditable suppressContentEditableWarning={true}>
               <p className="paternity_leave_para">{person.paternity_leave}</p>
             </div>
-          </td>
+          </td> */}
           <td className="delete">
             <img src={close} className={`${person.name}+ close`} onClick={toggleDeleteStaff} alt="Delete Staff" />
           </td>
@@ -137,6 +161,9 @@ const Home = () => {
     );
   });
 
+  // each staff object
+  // name : 
+  // ..._leave
   const handleDeleteStaff = () => {
     setShowDeleteText(true);
     deleteDoc(doc(db, "staff", staffToDelete))
@@ -166,7 +193,7 @@ const Home = () => {
       report.save('staff.pdf');
     })
   }
-
+  console.log(staffDetails)
   return (
     // Reflect the leave that is fetch from db
     <>
