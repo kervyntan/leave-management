@@ -93,28 +93,31 @@ const Home = () => {
     }
     return 0;
   }
-  // const staffTest = staffKeys.map((item) => {
-  //   if (item === "name") {
-  //     return (
-  //       <>
-  //         <td className={item}>
-  //           <p className={`${item} + "_para"`}> {person[item]} </p>
-  //         </td>
-  //       </>
-  //     )
-  //   }
-  // })
 console.log(staffKeys)
+console.log(leaveTypes)
 // Find a way to fetch data without hitting this error
   const staff = staffDetails.sort(compareStaff).map((person) => {
-    const staffTest = staffKeys.map((item) => {
+    const staffData = staffKeys.map((item) => {
+      let amtOfLeave = person[item];
+      // If amount of leave given to that person is not recorded/empty
+      // eg. the person doesn't have leave in that category
+      if (amtOfLeave) { 
         return (
           <>
             <td className={item}>
-              <p className={`${item} + "_para"`}> {person[item]} </p>
+              <p className={`${item}_para`}> {amtOfLeave} </p>
             </td>
           </>
         )
+        } else {
+          return (
+            <>
+              <td className={item}>
+                <p className={`${item}_para`}> 0 </p>
+              </td>
+            </>
+          )
+        }
     })
     // console.log(staffTest)
     return (
@@ -125,7 +128,7 @@ console.log(staffKeys)
               <p className="name_para">{person.name}</p>
             </div>
           </td>
-          {staffTest}
+          {staffData}
           {/* <td className="annual_leave">
             <div contentEditable suppressContentEditableWarning={true}>
               <p className="annual_leave_para">{person.annual_leave}</p>
