@@ -18,7 +18,9 @@ const CheckStaffLeave = () => {
   const current = new Date();
   // First and last day of the current month
   let firstDate = getFirstAndLastDay()[0];
+  let firstDateISO = new Date(firstDate).toISOString();
   let lastDate = getFirstAndLastDay()[1];
+  let lastDateISO = new Date(lastDate).toISOString();
   const allMonths = [
     {
       0: "January"
@@ -135,11 +137,9 @@ const CheckStaffLeave = () => {
       gapi.auth2.getAuthInstance().signIn()
         .then(() => {
           // Get all the events in a month
-
-          console.log(firstDate)
-          console.log(lastDate)
           let request = gapi.client.calendar.events.list({
             calendarId: "primary",
+            singleEvents : true,
             timeMin: `${firstDate}T00:00:00+08:00`,
             timeMax: `${lastDate}T23:59:59+08:00`,
           });
@@ -147,7 +147,6 @@ const CheckStaffLeave = () => {
           request.execute((event, res) => {
             // Array containing all events in the month
             const resArr = JSON.parse(res)[0].result.items;
-            console.log(resArr)
             // If there are no events in the month
             if (resArr.length === 0) {
               numberOfLeaves.find((obj) => obj.name === selectRef.current.value).numberOfLeave = 0;
@@ -156,25 +155,27 @@ const CheckStaffLeave = () => {
             } else {
               resArr.forEach( (item) => {
                 // Staff if they have taken leave
-
-                // Staff name
                 console.log(resArr)
-                const staff = item.summary.split("(")[0]
-                console.log(staff)
-                
+                // Staff name
+                let staff = "";
+                let isStaff = -1;
+                // In case expired event doesn't contain summary key in the event object                
+                if (item.summary) {
+                  staff = item.summary.split("(")[0]
+
                 // check if the staff constant above is a part of current team/event crawled is not a leave event
                 // Returns -1 if false
-                const isStaff = item.summary.search("Leave")
-                // console.log(staff)
-                console.log(isStaff);
-                // console.log(staffArr)
+                  isStaff = item.summary.search("Leave")
+                }
+                // If staff event/leave doesn't exist
                 if(isStaff !== -1) {
+                  // Can use break and continue 
+
                   // Start and end Date
                   const startDate = (item.start.dateTime.split("T")[0].split(":"))[0];
                   const endDate = (item.end.dateTime.split("T")[0].split(":"))[0];
-    
                   // Calculate the number of days from the two given dates
-                  const days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate));
+                  const days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate), new Date(firstDate).getMonth());
     
                   // let number_of_days = endDay - startDay;
                   let whichDays = "";
@@ -221,11 +222,6 @@ const CheckStaffLeave = () => {
 
   
   const months = allMonths.map((month, index) => {
-    // Loop through array of months, then assign the current month to be the one that is selected
-    // getMonth() returns value from 0 - 11 depending on month
-    // if (current.getMonth() === index) {
-    //   return <option key={index} value={month[index]}> {month[index]} </option>;
-    // } else {
       return <option key={index} value={month[index]}> {month[index]} </option>;
   })
 
@@ -239,6 +235,8 @@ const CheckStaffLeave = () => {
     })
     firstDate = getFirstAndLastDay(key)[0]
     lastDate = getFirstAndLastDay(key)[1]
+    console.log(firstDate)
+    console.log(lastDate)
     if (firstDate && lastDate) {
       handleGoogle()
     } else {

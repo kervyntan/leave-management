@@ -20,6 +20,7 @@ const ApplyLeave = () => {
   const reason = useRef("reason");
   const name = useRef("name");
   const leave = useRef("leave");
+  let currentMonth = new Date().getMonth();
   let currentLeave = "";
   const colRefStaff = collection(db, "staff");
   const docRefLeaveTypes = doc(db, "showLeaveTypes", "showLeaveTypes");
@@ -73,6 +74,7 @@ const ApplyLeave = () => {
     e.preventDefault();
     const inputEndDate = new Date(endDate.current.value);
     const inputStartDate = new Date(startDate.current.value);
+    currentMonth = new Date(startDate.current.value).getMonth();
     if (inputEndDate < inputStartDate) {
       setInvalidDuration(true);
     } else {
@@ -82,7 +84,7 @@ const ApplyLeave = () => {
     // the type of leave they took
     const leaveType = (leave.current.value + "_leave").toLowerCase();
     // number of days taken/selected by the staff 
-    let days_taken = dateCalculatorExcludeWeekend(new Date(startDate.current.value), new Date(endDate.current.value)).length;
+    let days_taken = dateCalculatorExcludeWeekend(new Date(startDate.current.value), new Date(endDate.current.value), currentMonth).length;
     getDoc(docRef).then((item) => {
       // Find the current amount of leave the person has
       currentLeave = parseInt(item.data()[leaveType])
@@ -149,7 +151,11 @@ const ApplyLeave = () => {
                 getDoc(docRef).then((item) => {
                   // Store the type of leave that has been taken in new object
                   const docData = {};
+                  console.log(leaveType)
+                  console.log(currentLeave)
+                  console.log(days_taken)
                   docData[leaveType] = currentLeave - days_taken;
+                  console.log(docData)
                   updateDoc(docRef, docData)
                     .then(() => {
                       console.log("Successful update of document.");
