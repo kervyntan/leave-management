@@ -166,9 +166,11 @@ const Home = () => {
   }
   return (
     <>
+    <h2 className="page-heading"> List of Staff: </h2>
+    <div className="button-group">
     <Button class="generate-excel-btn btn" text="Export as Excel" onClick={generateExcel} />
     <Button class="generate-pdf-btn btn" text="Export as PDF" onClick={generatePDF} />
-    <h2 className="page-heading"> List of Staff: </h2>
+    </div>
     {loading 
       ? <Loading />
       : <>

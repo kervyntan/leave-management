@@ -3,6 +3,7 @@
     --clr-primary : #4059AD;
     --clr-secondary : #97D8C4;
     --clr-text : #EFF2F1;
+    --clr-white : #fff;
 }
 
 * {
@@ -53,20 +54,25 @@ blockquote {
 }
 
 .generate-excel-btn {
-  margin-top : 20px;
+  /* margin-top : 20px; */
+  margin-bottom : 20px;
 }
 
 .generate-pdf-btn {
   margin-left : 20px;
 }
 
+.button-group {
+  text-align : center;
+}
+
 
 button {
-  padding : 5px 10px 5px 10px;
+  padding : 10px 15px 10px 15px;
   border-radius : 25px;
   border : 1px solid var(--clr-black);
   background : var(--clr-secondary);
-  color : var(--clr-text);
+  color : var(--clr-white);
   font-weight : 700;
   cursor : pointer;
 }
@@ -75,6 +81,11 @@ button {
     color : var(--clr-text);
     text-decoration : none;
     font-weight : 700;
+}
+
+.mantine-RangeCalendar-calendarBase.mantine-1nw5k7j {
+  background: #fff;
+  border-radius: 6px;
 }
 
 .add-staff-form,

@@ -3,6 +3,7 @@ import Button from "./Button";
 import Loading from "./Loading";
 import { compareNames } from "../compareNames";
 import { Modal } from "@mantine/core";
+import { RangeCalendar } from '@mantine/dates';
 import { dateCalculatorExcludeWeekend } from "../dateMethods";
 import { db } from "../firebase";
 import {
@@ -15,8 +16,7 @@ import {
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const ApplyLeave = () => {
-  const startDate = useRef("startDate");
-  const endDate = useRef("endDate");
+  // fix range calendar apply leave
   const reason = useRef("reason");
   const name = useRef("name");
   const leave = useRef("leave");
@@ -29,6 +29,20 @@ const ApplyLeave = () => {
   const [canTakeLeave, setCanTakeLeave] = useState(true);
   const [invalidDuration, setInvalidDuration] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([])
+  // pass in predefined date
+  const [leaveDuration, setLeaveDuration] = useState([ 
+    new Date(2023, 1, 1),
+    new Date(2023, 1, 5),
+  ]);
+  // Dates in ISO Format eg. YYYY-MM-DD
+  let startDate = "";
+  let endDate = "";
+  // console.log(leaveDuration)
+  // console.log(leaveDuration.find(val => val === null))
+  if (leaveDuration.find(val => val === null) === undefined) {
+    startDate = leaveDuration[0].toISOString().split("T")[0];
+    endDate = leaveDuration[1].toISOString().split("T")[0];
+  }
 
   if (loading) {
     document.body.style.overflow = "hidden";
@@ -72,9 +86,9 @@ const ApplyLeave = () => {
 
   const handleAddLeave = (e) => {
     e.preventDefault();
-    const inputEndDate = new Date(endDate.current.value);
-    const inputStartDate = new Date(startDate.current.value);
-    currentMonth = new Date(startDate.current.value).getMonth();
+    const inputEndDate = new Date(endDate);
+    const inputStartDate = new Date(startDate);
+    currentMonth = new Date(startDate).getMonth();
     if (inputEndDate < inputStartDate) {
       setInvalidDuration(true);
     } else {
@@ -84,7 +98,9 @@ const ApplyLeave = () => {
     // the type of leave they took
     const leaveType = (leave.current.value + "_leave").toLowerCase();
     // number of days taken/selected by the staff 
-    let days_taken = dateCalculatorExcludeWeekend(new Date(startDate.current.value), new Date(endDate.current.value), currentMonth).length;
+    console.log(startDate)
+    console.log(endDate)
+    let days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate), currentMonth).length;
     getDoc(docRef).then((item) => {
       // Find the current amount of leave the person has
       currentLeave = parseInt(item.data()[leaveType])
@@ -119,11 +135,11 @@ const ApplyLeave = () => {
                   summary: `${name.current.value}${leaveTxt} - ${reason.current.value}`,
                   description: `${leave.current.value}`,
                   start: {
-                    dateTime: `${startDate.current.value}T00:00:00+08:00`,
+                    dateTime: `${startDate}T00:00:00+08:00`,
                     timeZone: "Asia/Singapore",
                   },
                   end: {
-                    dateTime: `${endDate.current.value}T23:59:59+08:00`,
+                    dateTime: `${endDate}T23:59:59+08:00`,
                     timeZone: "Asia/Singapore",
                   },
                   reminders: {
@@ -240,7 +256,7 @@ const ApplyLeave = () => {
           {typesOfLeave}
         </select>
 
-        <label htmlFor="start"> Start Date </label>
+        {/* <label htmlFor="start"> Start Date </label>
         <input
           ref={startDate}
           id="start"
@@ -250,7 +266,10 @@ const ApplyLeave = () => {
         />
 
         <label htmlFor="end"> End Date </label>
-        <input ref={endDate} id="end" name="duration" type="date" required/>
+        <input ref={endDate} id="end" name="duration" type="date" required/> */}
+
+        <label htmlFor="leave_duration"> Leave Duration: </label>
+        <RangeCalendar value={leaveDuration} onChange={setLeaveDuration} />
         <Button
           onClick={handleAddLeave}
           class="form-btn"

@@ -3,7 +3,7 @@ import Button from "./Button"
 import Loading from './Loading';
 import { compareNames } from "../compareNames";
 import { Checkbox, Paper, Input } from '@mantine/core';
-import { collection, addDoc, getDoc, getDocs, setDoc, doc, onSnapshot } from 'firebase/firestore';
+import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const Settings = () => {
@@ -37,7 +37,6 @@ const Settings = () => {
         console.log(checked)
     }, [checked])
 
-
     const handleAddLeaveType = () => {
         setDoc(docShowLeaveTypesRef, {
             [leaveToBeAdded.current.value] : true
@@ -64,6 +63,7 @@ const Settings = () => {
     const checkboxKeys = Object.keys(checked);
     const checkboxList = checkboxKeys.sort(compareNames).map((checkbox) => {
         return <Checkbox checked={checked[checkbox]} label={checkbox.toUpperCase()}
+        // toggle between true and false on click of the checkbox
             onClick={() => setChecked({ ...checked, [checkbox]: !checked[checkbox] })}
         />
     })
