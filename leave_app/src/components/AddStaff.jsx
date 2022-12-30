@@ -72,13 +72,22 @@ const AddStaff = () => {
 
   const formFields = Object.keys(formValues).sort(compareNames).map((field) => {
     const formatFieldName = field.split("_")[0].charAt(0).toUpperCase() + field.split("_")[0].slice(1);
-    return (
-      <>
-        <label htmlFor={field}> {formatFieldName}: </label>
-        {/* condition to show placeholder */}
-        <input id={field} name={field} placeholder={"No. of leave eg. 14"} onChange={changeHandler} value={leaveSubmission[field]} required />
-      </>
-    )
+    if (field === "nopay_leave") {
+      return (
+        <>
+          <label htmlFor={field}> No Pay </label>
+          <input id={field} name={field} placeholder="No. of leave eg. 14" onChange={changeHandler} value={leaveSubmission[field]} required />
+        </>
+      )
+    } else {
+      return (
+        <>
+          <label htmlFor={field}> {formatFieldName}: </label>
+          {/* condition to show placeholder */}
+          <input id={field} name={field} placeholder="No. of leave eg. 14" onChange={changeHandler} value={leaveSubmission[field]} required />
+        </>
+      )
+    }
   })
 
   return (

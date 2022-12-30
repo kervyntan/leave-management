@@ -18,8 +18,7 @@ const dateCalculatorExcludeWeekend = (startDate, endDate, currentMonth) => {
         // Only add date to array if it is NOT a Saturday or Sunday
         const dateISO = date.toISOString().split("T")[0];
         const isHoliday = holidays.find( (item) => item === dateISO );
-        // console.log(isHoliday)
-        
+
         // If the current date's month is not the same as the currentMonth passed in
         // currentMonth is the one that has been selected in the input
         // Then go to the next iteration i.e. next date in the loop

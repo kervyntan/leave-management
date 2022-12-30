@@ -62,10 +62,17 @@ const Settings = () => {
 
     const checkboxKeys = Object.keys(checked);
     const checkboxList = checkboxKeys.sort(compareNames).map((checkbox) => {
-        return <Checkbox checked={checked[checkbox]} label={checkbox.toUpperCase()}
-        // toggle between true and false on click of the checkbox
-            onClick={() => setChecked({ ...checked, [checkbox]: !checked[checkbox] })}
-        />
+        if (checkbox === "NoPay") {
+            return <Checkbox checked={checked[checkbox]} label="No Pay"
+            // toggle between true and false on click of the checkbox
+                onClick={() => setChecked({ ...checked, [checkbox]: !checked[checkbox] })}
+            />
+        } else {
+            return <Checkbox checked={checked[checkbox]} label={checkbox.charAt(0).toUpperCase() + checkbox.slice(1)}
+            // toggle between true and false on click of the checkbox
+                onClick={() => setChecked({ ...checked, [checkbox]: !checked[checkbox] })}
+            />
+        }
     })
     // Loop through the checkboxes and each should have the prop of checked.leaveType
     // 

@@ -66,6 +66,19 @@ blockquote {
   text-align : center;
 }
 
+.mantine-1f8v7sc[data-weekend] {
+  color : #ced4da;
+}
+
+select,
+input {
+  padding : 5px 10px 5px 10px;
+  border-radius : 5px;
+}
+
+input {
+  border : none;
+}
 
 button {
   padding : 10px 15px 10px 15px;

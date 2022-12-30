@@ -29,16 +29,11 @@ const ApplyLeave = () => {
   const [canTakeLeave, setCanTakeLeave] = useState(true);
   const [invalidDuration, setInvalidDuration] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([])
-  // pass in predefined date
-  const [leaveDuration, setLeaveDuration] = useState([ 
-    new Date(2023, 1, 1),
-    new Date(2023, 1, 5),
-  ]);
+  // pass in predefined date (null dates)
+  const [leaveDuration, setLeaveDuration] = useState([ null, null ]);
   // Dates in ISO Format eg. YYYY-MM-DD
   let startDate = "";
   let endDate = "";
-  // console.log(leaveDuration)
-  // console.log(leaveDuration.find(val => val === null))
   if (leaveDuration.find(val => val === null) === undefined) {
     startDate = leaveDuration[0].toISOString().split("T")[0];
     endDate = leaveDuration[1].toISOString().split("T")[0];
@@ -98,8 +93,6 @@ const ApplyLeave = () => {
     // the type of leave they took
     const leaveType = (leave.current.value + "_leave").toLowerCase();
     // number of days taken/selected by the staff 
-    console.log(startDate)
-    console.log(endDate)
     let days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate), currentMonth).length;
     getDoc(docRef).then((item) => {
       // Find the current amount of leave the person has
