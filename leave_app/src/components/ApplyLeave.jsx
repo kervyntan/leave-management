@@ -4,7 +4,7 @@ import Loading from "./Loading";
 import { compareNames } from "../compareNames";
 import { Modal } from "@mantine/core";
 import { RangeCalendar } from '@mantine/dates';
-import { dateCalculatorExcludeWeekend, dateCalculatorExcludeWeekendNoCurrentMonth } from "../dateMethods";
+import { dateCalculatorExcludeWeekendNoCurrentMonth } from "../dateMethods";
 import { db } from "../firebase";
 import {
   collection,
@@ -29,6 +29,7 @@ const ApplyLeave = () => {
   const [canTakeLeave, setCanTakeLeave] = useState(true);
   const [invalidDuration, setInvalidDuration] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([])
+  const [errorModal, setErrorModal] = useState(false);  
   // pass in predefined date (null dates)
   const [leaveDuration, setLeaveDuration] = useState([ null, null ]);
   // Dates in ISO Format eg. YYYY-MM-DD
@@ -81,106 +82,112 @@ const ApplyLeave = () => {
 
   const handleAddLeave = (e) => {
     e.preventDefault();
-    const inputEndDate = new Date(endDate);
-    const inputStartDate = new Date(startDate);
-    currentMonth = new Date(startDate).getMonth();
-    if (inputEndDate < inputStartDate) {
-      setInvalidDuration(true);
-    } else {
+    const formValues = [
+      name.current.value,
+      reason.current.value,
+      leave.current.value
+    ]
+    console.log(formValues)
+    if (formValues.find(val => val === "" ) === "") {
+      setErrorModal(true);
+   } else {
+      const inputEndDate = new Date(endDate);
+      const inputStartDate = new Date(startDate);
+      currentMonth = new Date(startDate).getMonth();
+      if (inputEndDate < inputStartDate) {
+        setInvalidDuration(true);
+      } else {
     // staff name
-    const staffName = name.current.value;
-    const docRef = doc(db, "staff", staffName);
-    // the type of leave they took
-    const leaveType = (leave.current.value + "_leave").toLowerCase();
-    // number of days taken/selected by the staff 
-    console.log(startDate)
-    console.log(endDate)
-    let days_taken = dateCalculatorExcludeWeekendNoCurrentMonth(new Date(startDate), new Date(endDate)).length;
-    console.log(days_taken)
-    getDoc(docRef).then((item) => {
-      // Find the current amount of leave the person has
-      currentLeave = parseInt(item.data()[leaveType])
-    })
-      .then(() => {
-        if (days_taken > currentLeave) {
-          setCanTakeLeave(false);
-        } else {
-          // load the auth
-          gapi.load("client:auth2", () => {
-            console.log("Client loaded");
-
-            // init with credentials
-            gapi.client.init({
-              apiKey: API_KEY,
-              clientId: CLIENT_ID,
-              discoveryDocs: DISCOVERY_DOC,
-              scope: SCOPES,
-              plugin_name: "leave-management-371308",
-            });
-
-            gapi.client.load("calendar", "v3", () => {
-              console.log("added!");
-            });
-            // triggers popup to sign in to google
-            gapi.auth2
-              .getAuthInstance()
-              .signIn()
-              .then(() => {
-                const leaveTxt = "(Leave)"
-                let event = {
-                  summary: `${name.current.value}${leaveTxt} - ${reason.current.value}`,
-                  description: `${leave.current.value}`,
-                  start: {
-                    dateTime: `${startDate}T00:00:00+08:00`,
-                    timeZone: "Asia/Singapore",
-                  },
-                  end: {
-                    dateTime: `${endDate}T23:59:59+08:00`,
-                    timeZone: "Asia/Singapore",
-                  },
-                  reminders: {
-                    useDefault: false,
-                    overrides: [
-                      { method: "email", minutes: 24 * 60 },
-                      { method: "popup", minutes: 10 },
-                    ],
-                  },
-                };
-                let request = gapi.client.calendar.events.insert({
-                  calendarId: "primary",
-                  resource: event,
-                });
-
-                request.execute((event, res) => {
-                  window.open(event.htmlLink);
-                  console.log(res);
-                });
-              })
-              .then(() => {
-                // Deducts the leave from the specific staff
-
-                // fetch the specific document about the staff
-                getDoc(docRef).then((item) => {
-                  // Store the type of leave that has been taken in new object
-                  const docData = {};
-                  console.log(leaveType)
-                  console.log(currentLeave)
-                  console.log(days_taken)
-                  docData[leaveType] = currentLeave - days_taken;
-                  console.log(docData)
-                  updateDoc(docRef, docData)
-                    .then(() => {
-                      console.log("Successful update of document.");
-                    })
-                    .catch((error) => {
-                      console.log(`Failed to update document. ${error}`);
-                    });
-                });
-              });
-          })
-        }
+      const staffName = name.current.value;
+      const docRef = doc(db, "staff", staffName);
+      // the type of leave they took
+      const leaveType = (leave.current.value + "_leave").toLowerCase();
+      // number of days taken/selected by the staff 
+      console.log(startDate)
+      console.log(endDate)
+      let days_taken = dateCalculatorExcludeWeekendNoCurrentMonth(new Date(startDate), new Date(endDate)).length;
+      console.log(days_taken)
+      getDoc(docRef).then((item) => {
+        // Find the current amount of leave the person has
+        currentLeave = parseInt(item.data()[leaveType])
       })
-    }
+        .then(() => {
+          if (days_taken > currentLeave) {
+            setCanTakeLeave(false);
+          } else {
+            // load the auth
+            gapi.load("client:auth2", () => {
+              console.log("Client loaded");
+
+              // init with credentials
+              gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                discoveryDocs: DISCOVERY_DOC,
+                scope: SCOPES,
+                plugin_name: "leave-management-371308",
+              });
+
+              gapi.client.load("calendar", "v3", () => {
+                console.log("added!");
+              });
+              // triggers popup to sign in to google
+              gapi.auth2
+                .getAuthInstance()
+                .signIn()
+                .then(() => {
+                  const leaveTxt = "(Leave)"
+                  let event = {
+                    summary: `${name.current.value}${leaveTxt} - ${reason.current.value}`,
+                    description: `${leave.current.value}`,
+                    start: {
+                      dateTime: `${startDate}T00:00:00+08:00`,
+                      timeZone: "Asia/Singapore",
+                    },
+                    end: {
+                      dateTime: `${endDate}T23:59:59+08:00`,
+                      timeZone: "Asia/Singapore",
+                    },
+                    reminders: {
+                      useDefault: false,
+                      overrides: [
+                        { method: "email", minutes: 24 * 60 },
+                        { method: "popup", minutes: 10 },
+                      ],
+                    },
+                  };
+                  let request = gapi.client.calendar.events.insert({
+                    calendarId: "primary",
+                    resource: event,
+                  });
+
+                  request.execute((event, res) => {
+                    window.open(event.htmlLink);
+                    console.log(res);
+                  });
+                })
+                .then(() => {
+                  // Deducts the leave from the specific staff
+
+                  // fetch the specific document about the staff
+                  getDoc(docRef).then((item) => {
+                    // Store the type of leave that has been taken in new object
+                    const docData = {};
+                    docData[leaveType] = currentLeave - days_taken;
+                    updateDoc(docRef, docData)
+                      .then(() => {
+                        console.log("Successful update of document.");
+                      })
+                      .catch((error) => {
+                        console.log(`Failed to update document. ${error}`);
+                      });
+                  });
+                });
+            })
+          }
+        })
+      }
+  }
   };
 
   const staffNames = staffList.map((staff) => {
@@ -212,6 +219,17 @@ const ApplyLeave = () => {
         title="Error in applying leave."
       >
         End Date must be after Start Date (vice-versa).
+        <br />
+        Click away to continue.
+      </Modal>
+
+      <Modal
+        centered
+        opened={errorModal}
+        onClose={() => setErrorModal(false)}
+        title="Error adding staff."
+      >
+        Please ensure none of the fields are empty.
         <br />
         Click away to continue.
       </Modal>
