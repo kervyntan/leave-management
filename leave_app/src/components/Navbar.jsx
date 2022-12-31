@@ -13,28 +13,7 @@ const Navbar = () => {
     settings : false
   })
 
-  // const indicateCurrentPage = (page) => {
-  //   const currPath = page.split("/")[1];
-  //   for (let key in selectedTab) {
-  //     selectedTab[key] = false;
-  //   }
-
-  //   if (currPath === "/") {
-  //     console.log(selectedTab["home"])
-  //     selectedTab["home"] = true;
-  //   } else {
-  //     console.log(selectedTab[currPath])
-  //     console.log(currPath)
-  //     selectedTab[currPath] = true;
-  //     console.log(selectedTab)
-  //   }
-  // }
   useEffect(() => {
-    // indicateCurrentPage(location.pathname)
-    // for (let key in selectedTab) {
-    //   selectedTab[key] = false;
-    // }
-
     if (location.pathname === "/") {
         setSelectedTab({
             home : true,

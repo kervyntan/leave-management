@@ -4,7 +4,7 @@ import Loading from "./Loading";
 import { compareNames } from "../compareNames";
 import { Modal } from "@mantine/core";
 import { RangeCalendar } from '@mantine/dates';
-import { dateCalculatorExcludeWeekend } from "../dateMethods";
+import { dateCalculatorExcludeWeekend, dateCalculatorExcludeWeekendNoCurrentMonth } from "../dateMethods";
 import { db } from "../firebase";
 import {
   collection,
@@ -93,7 +93,10 @@ const ApplyLeave = () => {
     // the type of leave they took
     const leaveType = (leave.current.value + "_leave").toLowerCase();
     // number of days taken/selected by the staff 
-    let days_taken = dateCalculatorExcludeWeekend(new Date(startDate), new Date(endDate), currentMonth).length;
+    console.log(startDate)
+    console.log(endDate)
+    let days_taken = dateCalculatorExcludeWeekendNoCurrentMonth(new Date(startDate), new Date(endDate)).length;
+    console.log(days_taken)
     getDoc(docRef).then((item) => {
       // Find the current amount of leave the person has
       currentLeave = parseInt(item.data()[leaveType])

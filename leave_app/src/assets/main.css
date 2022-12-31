@@ -70,6 +70,14 @@ blockquote {
   color : #ced4da;
 }
 
+.mantine-Paper-root.mantine-Modal-modal.mantine-rqmd87 {
+  text-align: center;
+}
+
+div#mantine-r0-title {
+  margin : 0 auto;
+}
+
 select,
 input {
   padding : 5px 10px 5px 10px;
