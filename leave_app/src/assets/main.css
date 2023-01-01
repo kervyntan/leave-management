@@ -53,6 +53,14 @@ blockquote {
   color : var(--clr-secondary) !important; 
 }
 
+.grid {
+  display : grid;
+}
+
+.grid-template-4fr {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .generate-excel-btn {
   /* margin-top : 20px; */
   margin-bottom : 20px;
@@ -75,7 +83,7 @@ blockquote {
   text-align: center;
 }
 
-div#mantine-r0-title {
+.mantine-cx9mud {
   margin : 0 auto;
 }
 
@@ -167,10 +175,10 @@ label {
     font-weight : 700;
 }
 
-.apply-leave-form input, 
+/* .apply-leave-form input, 
 .apply-leave-form select {
     width : 70%;
-}
+} */
 
 h2.page-heading {
   margin-block : 20px;

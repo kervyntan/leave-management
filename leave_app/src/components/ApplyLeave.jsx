@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Button from "./Button";
 import Loading from "./Loading";
 import { compareNames } from "../compareNames";
-import { Modal } from "@mantine/core";
+import { Card, Modal, Text, Checkbox } from "@mantine/core";
 import { RangeCalendar } from '@mantine/dates';
 import { dateCalculatorExcludeWeekendNoCurrentMonth } from "../dateMethods";
 import { db } from "../firebase";
@@ -16,10 +16,13 @@ import {
 import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 
 const ApplyLeave = () => {
-  // fix range calendar apply leave
+  // Allow for person to take one leave only (so scan the 1st index of the array)**
+  // If it is null upon submission, then assume that end Date and start Date is the same
+
   const reason = useRef("reason");
   const name = useRef("name");
   const leave = useRef("leave");
+  const leave_structure = useRef("");
   let currentMonth = new Date().getMonth();
   let currentLeave = "";
   const colRefStaff = collection(db, "staff");
@@ -29,15 +32,41 @@ const ApplyLeave = () => {
   const [canTakeLeave, setCanTakeLeave] = useState(true);
   const [invalidDuration, setInvalidDuration] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([])
+  const [showHalfDayApplication, setShowHalfDayApplication] = useState(false);
   const [errorModal, setErrorModal] = useState(false);  
   // pass in predefined date (null dates)
   const [leaveDuration, setLeaveDuration] = useState([ null, null ]);
   // Dates in ISO Format eg. YYYY-MM-DD
   let startDate = "";
   let endDate = "";
+  let halfDays = "";
   if (leaveDuration.find(val => val === null) === undefined) {
-    startDate = leaveDuration[0].toISOString().split("T")[0];
-    endDate = leaveDuration[1].toISOString().split("T")[0];
+    const daysChosen = []
+    // Create new date instances to prevent overwriting values in leaveDuration array
+    // When setDate method is used
+    daysChosen[0] = new Date(leaveDuration[0]);
+    daysChosen[1] = new Date(leaveDuration[1]);
+    daysChosen[0].setDate(daysChosen[0].getDate() + 1)
+    daysChosen[1].setDate(daysChosen[1].getDate() + 1)
+    // Assign startDate and endDate new values of chosen dates
+    startDate = daysChosen[0].toISOString().split("T")[0];
+    endDate = daysChosen[1].toISOString().split("T")[0];
+    let datesObj = {}
+    const datesArr = dateCalculatorExcludeWeekendNoCurrentMonth(new Date(startDate), new Date(endDate))
+    datesArr.forEach((day) => {
+      // Get date in terms of 1,2,... 28, 29, 30, 31
+      const dayToDate = day.getDate()
+      // Create object of options for the checkboxes
+      datesObj = {...datesObj, [dayToDate] : false }
+    })
+    halfDays = datesArr.map((day) => {
+      // console.log(day)
+        return (
+          <Checkbox label={day.getDate()} checked={datesObj[day]} 
+          onChange={() => { datesObj = {...datesObj, [day] : !datesObj[day] }}}
+          />
+        )
+    })
   }
 
   if (loading) {
@@ -80,6 +109,14 @@ const ApplyLeave = () => {
     }, 500)
   }, []);
 
+  const handleLeaveStructure = (e) => {
+    if (e.target.value === "Half Day Leave") {
+      setShowHalfDayApplication(true);
+    } else {
+      setShowHalfDayApplication(false);
+    }
+  }
+
   const handleAddLeave = (e) => {
     e.preventDefault();
     const formValues = [
@@ -87,7 +124,6 @@ const ApplyLeave = () => {
       reason.current.value,
       leave.current.value
     ]
-    console.log(formValues)
     if (formValues.find(val => val === "" ) === "") {
       setErrorModal(true);
    } else {
@@ -98,15 +134,16 @@ const ApplyLeave = () => {
         setInvalidDuration(true);
       } else {
     // staff name
+    // Allows person to take leave on 1 day
+      if (leaveDuration[1] === null) {
+        endDate = startDate;
+      }
       const staffName = name.current.value;
       const docRef = doc(db, "staff", staffName);
       // the type of leave they took
       const leaveType = (leave.current.value + "_leave").toLowerCase();
       // number of days taken/selected by the staff 
-      console.log(startDate)
-      console.log(endDate)
       let days_taken = dateCalculatorExcludeWeekendNoCurrentMonth(new Date(startDate), new Date(endDate)).length;
-      console.log(days_taken)
       getDoc(docRef).then((item) => {
         // Find the current amount of leave the person has
         currentLeave = parseInt(item.data()[leaveType])
@@ -258,6 +295,12 @@ const ApplyLeave = () => {
           required
         />
 
+        <label htmlFor="leave_structure"> Leave Structure: </label>
+        <select ref={leave_structure} id="leave_structure" name="leave_structure" onChange={handleLeaveStructure} required>
+          <option value="Full Day Leave"> Full Day Leave </option>
+          <option value="Half Day Leave"> Half Day Leave </option>
+        </select>
+
         <label htmlFor="type"> Type of Leave: </label>
         <select
           ref={leave}
@@ -270,20 +313,14 @@ const ApplyLeave = () => {
           {typesOfLeave}
         </select>
 
-        {/* <label htmlFor="start"> Start Date </label>
-        <input
-          ref={startDate}
-          id="start"
-          name="duration"
-          type="date"
-          required
-        />
-
-        <label htmlFor="end"> End Date </label>
-        <input ref={endDate} id="end" name="duration" type="date" required/> */}
-
         <label htmlFor="leave_duration"> Leave Duration: </label>
         <RangeCalendar value={leaveDuration} onChange={setLeaveDuration} />
+
+        {showHalfDayApplication && 
+        <div className="grid grid-template-4fr">  
+          {halfDays}
+        </div>
+        }
         <Button
           onClick={handleAddLeave}
           class="form-btn"
