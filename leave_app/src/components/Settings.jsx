@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Button from "./Button"
 import Loading from './Loading';
 import { compareNames } from "../compareNames";
-import { Checkbox, Paper, Input } from '@mantine/core';
+import { Checkbox, Paper, Input, Text } from '@mantine/core';
 import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -78,21 +78,23 @@ const Settings = () => {
     // 
     return (
         <div className="settings">
+            <h2 class="page-heading"> Settings </h2>
             {loading 
             ? <Loading /> 
-            : <>
+            : <div className="settings-section">
             {/* <Button onClick={addLeave} text="I test" /> */}
-            <Paper shadow="xl" p="md" m="md" style={{ backgroundColor: "#4059AD" }}>
+            <Paper shadow="xl" p="md" m="md" style={{ backgroundColor: "#F7F8FC" }}>
+                <Text fz={16} style={{color : "#4458A7", fontWeight : "bold", marginBottom : "20px"}}> Leave Types </Text>
                 {checkboxList}
-                <Button onClick={updateShowLeaveTypes} text="Save" className="btn" />
+                <Button onClick={updateShowLeaveTypes} text="Save" class="btn settings-btn" />
             </Paper>
-            <Paper shadow="xl" p="md" m="md" style={{ backgroundColor: "#4059AD" }}>
+            <Paper shadow="xl" p="md" m="md" style={{ backgroundColor: "#F7F8FC" }}>
                 <Input.Wrapper p="xs" label="Add Leave Type: eg. Annual">
                     <Input placeholder="Type of leave to add:" ref={leaveToBeAdded} style={{marginBottom : "20px"}} />
-                    <Button onClick={handleAddLeaveType} text="Add Leave Type" className="btn" />
+                    <Button onClick={handleAddLeaveType} text="Add Leave Type" class="btn settings-btn" />
                 </Input.Wrapper>
             </Paper>
-            </>
+            </div>
             }
         </div>
     )

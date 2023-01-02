@@ -4,11 +4,13 @@
     --clr-secondary : #97D8C4;
     --clr-text : #EFF2F1;
     --clr-white : #fff;
+    --clr-form-text : #4458A7;
+    --clr-light-bg : #F7F8FC;
 }
 
 * {
     box-sizing: border-box;
-    font-family : Open Sans;
+    font-family : Open Sans !important;
 }
 
 body,
@@ -19,6 +21,37 @@ p,
 blockquote {
   margin : 0;
   padding : 0;
+  font-family : Open Sans !important;
+}
+.container {
+  background-image: url("../assets/bg-motif.png");
+  background-size : 100%;
+  /* height : 100vh; */
+  /* width : 100vw;  */
+  background-repeat: no-repeat;
+}
+
+.table-section,
+.apply-leave-section,
+.add-staff-section,
+.check-staff-section,
+.settings-section {
+  background : var(--clr-white);
+  padding : 40px;
+  border-radius : 40px;
+  margin-bottom : 40px;
+  box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
+  -webkit-box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
+}
+
+.home,
+.apply-leave,
+.add-staff,
+.check-staff,
+.settings {
+  max-width : 80%;
+  margin : 0 auto; 
 }
 
 .close {
@@ -29,10 +62,11 @@ blockquote {
 
 .delete {
   border : none !important;
+  background : var(--clr-white);
 }
 
 .container {
-    max-width : 1080px;
+    /* max-width : 1080px; */
     margin : 0 auto;
     padding-inline : 100px; 
 }
@@ -44,13 +78,34 @@ blockquote {
 
 .nav {
     display : flex;
-    background : var(--clr-primary);
+    background : var(--clr-form-text);
     padding : 10px;
     justify-content: space-around;
 }
 
 .selected {
   color : var(--clr-secondary) !important; 
+}
+
+table {
+  border-spacing : 0;
+}
+
+.tr-staff:last-child {
+  display : none;
+}
+
+td, th {
+  border : 0.5px solid rgba(0, 0, 0, 0.1);
+}
+
+.odd {
+  background : var(--clr-light-bg);
+}
+
+th {
+  background : var(--clr-form-text);
+  color : var(--clr-text);
 }
 
 .grid {
@@ -71,7 +126,7 @@ blockquote {
 }
 
 .button-group {
-  text-align : center;
+  text-align: right;
 }
 
 .mantine-1f8v7sc[data-weekend] {
@@ -89,8 +144,11 @@ blockquote {
 
 select,
 input {
-  padding : 5px 10px 5px 10px;
+  padding : 10px 10px 10px 10px;
   border-radius : 5px;
+  border : none;
+  margin-block : 10px;
+  background : var(--clr-light-bg);
 }
 
 input {
@@ -100,9 +158,9 @@ input {
 button {
   padding : 10px 15px 10px 15px;
   border-radius : 25px;
-  border : 1px solid var(--clr-black);
-  background : var(--clr-secondary);
-  color : var(--clr-white);
+  border : 1px solid var(--clr-form-text);
+  background : transparent;
+  color : var(--clr-form-text);
   font-weight : 700;
   cursor : pointer;
 }
@@ -123,15 +181,29 @@ button {
     display : flex;
     flex-direction : column;
     gap : 1em;
-    background : var(--clr-primary);
-    box-shadow: 0px 0px 2px 2px var(--clr-black);
-    margin-block : 20px;
-    padding : 20px;
+}
+
+.calendar {
+  box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
+  -webkit-box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
+}
+/* 
+.mantine-y66xed {
+  font-family : 
+} */
+
+.mantine-Text-root.mantine-RangeCalendar-weekday.mantine-17ie1b8 {
+  color : var(--clr-white) !important;
 }
 
 .form-btn {
     width : fit-content;
     padding-inline : 20px;
+}
+
+.settings-btn {
+  margin-top : 10px;
 }
 
 .staff,
@@ -159,7 +231,7 @@ table.staff-table {
 }
 
 label {
-  color : var(--clr-text);
+  color : var(--clr-form-text);
   font-weight : 700;
 }
 
@@ -170,19 +242,16 @@ label {
 .on-leave td,
 .on-leave th {
     padding : 10px;
-    border : 1px solid var(--clr-primary);
+    /* border : 1px solid var(--clr-primary); */
     text-align : center;
-    font-weight : 700;
 }
 
-/* .apply-leave-form input, 
-.apply-leave-form select {
-    width : 70%;
-} */
-
 h2.page-heading {
-  margin-block : 20px;
-  text-align : center;
+  margin-bottom : 40px;
+  text-align : left;
+  padding-top : 60px;
+  color : var(--clr-white);
+  letter-spacing: 0.05em  ;
 }
 
 .delete-staff-btn {
@@ -205,7 +274,7 @@ select#month {
 
 /* Settings Page */
 .mantine-InputWrapper-label.mantine-ittua2 {
-  color : var(--clr-text);
+  color : var(--clr-form-text);
   font-weight: bold;
   margin-bottom : 20px;
 }
@@ -391,12 +460,23 @@ select#month {
     /* margin : 0 auto; */
   }
 
-  .staff td.column-1,
+  .staff th.column-1 {
+    background : var(--clr-form-text);
+  }
+
+  .button-group {
+    text-align : center; 
+  }
+
+  .staff td.column-1 {
+    background : var(--clr-white);
+  }
+
+  .staff td.column-1, 
   .staff th.column-1 {
     position : sticky;
     left : 0;
     z-index : 2;
-    background : white;
   }
 
   .container {

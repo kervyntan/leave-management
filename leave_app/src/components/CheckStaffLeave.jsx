@@ -178,9 +178,7 @@ const CheckStaffLeave = () => {
                 // If staff event/leave doesn't exist
                 if(isStaff !== -1) {
                   // Can use break and continue 
-                  // const halfDaysFormatted = halfDaysUnformatted.map((date) => {
 
-                  // })
                   // Start and end Date
                   const startDate = (item.start.dateTime.split("T")[0].split(":"))[0];
                   const endDate = (item.end.dateTime.split("T")[0].split(":"))[0];
@@ -202,6 +200,7 @@ const CheckStaffLeave = () => {
                     }
                   })
                   // Number of days between endDay and startDay (excl weekends)
+                  // Assign empty array to halfDaysFormatted so that length will be 0 if no half days are taken
                   if (halfDaysFormatted[0] === "") { halfDaysFormatted = [] }
                   const number_of_days_taken = days_taken.length - (halfDaysFormatted.length * 0.5);
     
@@ -270,9 +269,12 @@ const CheckStaffLeave = () => {
   }
 
   return (
-    <div className="container leave-overview">
-      {loading && <Loading />}
-      <h2 className="page-heading"> Leave Overview: </h2>
+    <div className="check-staff">
+    <h2 className="page-heading"> Leave Overview: </h2>
+    <div className="check-staff-section">
+      {loading  
+      ? <Loading />
+      : <>
       <label name="staff" htmlFor="staff">
         Staff: 
         <select
@@ -310,6 +312,9 @@ const CheckStaffLeave = () => {
           {haveTakenLeave}
         </tbody>
       </table>
+      </>
+      }
+    </div>
     </div>
   );
 };

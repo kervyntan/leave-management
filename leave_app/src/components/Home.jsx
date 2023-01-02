@@ -85,7 +85,6 @@ const Home = () => {
                   }}
               })
           }
-            console.log(appendObj)
             setStaffKeys(Object.keys(appendObj).filter((item) => item !== "name").sort(compareNames))
             setStaffDetails((staffDetails) => [
               // doc.data() contains all the information about each staff
@@ -108,9 +107,9 @@ const Home = () => {
     setStaffToDelete(e.target.className.split("+")[0]);
   }
 
-  const staff = staffDetails.sort(compareStaff).map((person) => {
+  const staff = staffDetails.sort(compareStaff).map((person, index) => {
     // Creates the table data
-    const staffData = staffKeys.map((item) => {
+    const staffData = staffKeys.map((item, index) => {
         return (
           <>
             <td className={item}>
@@ -119,6 +118,7 @@ const Home = () => {
           </>
         )
     })
+    if (index % 2 === 0) {
     return (
       <>
         <tr key={Math.random}>
@@ -133,7 +133,24 @@ const Home = () => {
           </td>
         </tr>
       </>
-    );
+    )
+    } else {
+      return (
+        <>
+          <tr key={Math.random} className="tr-staff odd">
+            <td className="name column-1">
+              <div>
+                <p className="name_para">{person.name}</p>
+              </div>
+            </td>
+            {staffData}
+            <td className="delete">
+              <img src={close} className={`${person.name}+ close`} onClick={toggleDeleteStaff} alt="Delete Staff" />
+            </td>
+          </tr>
+        </>
+      )
+    }
   });
 
   const handleDeleteStaff = () => {
@@ -165,12 +182,8 @@ const Home = () => {
     })
   }
   return (
-    <>
+    <div className="home">
     <h2 className="page-heading"> List of Staff: </h2>
-    <div className="button-group">
-    <Button class="generate-excel-btn btn" text="Export as Excel" onClick={generateExcel} />
-    <Button class="generate-pdf-btn btn" text="Export as PDF" onClick={generatePDF} />
-    </div>
     {loading 
       ? <Loading />
       : <>
@@ -185,18 +198,24 @@ const Home = () => {
         <Button class="delete-staff-btn btn" text="Delete Staff" onClick={handleDeleteStaff} />
         {showDeleteText && <p> Entry is being deleted. Please wait for the page to reload. </p>}
       </Modal>
+      <div className="table-section">
+      <div className="button-group">
+        <Button class="generate-excel-btn btn" text="Export as Excel" onClick={generateExcel} />
+        <Button class="generate-pdf-btn btn" text="Export as PDF" onClick={generatePDF} />
+      </div>
       <table className="staff" id="table-staff">
         <tbody>
-          <tr>
+          <tr className="table-headers">
             <th className="column-1"> Name </th>
             {tableHeaders}
           </tr>
           {staff}
         </tbody>
       </table>
+      </div>
     </>
     }
-    </>
+    </div>
   );
 };
 

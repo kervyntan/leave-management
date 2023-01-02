@@ -93,7 +93,9 @@ const AddStaff = () => {
   return (
     // Reflect the leave that is fetch from db
     // And add/remove the inputs
-    <div className="container">
+    <div className="add-staff">
+    <h2 className="page-heading"> Add Staff Form </h2>
+    <div className="add-staff-section">
       {loading 
       ? <Loading />
       : <>
@@ -127,6 +129,7 @@ const AddStaff = () => {
       </form>
       </> 
       }
+    </div>
     </div>
   );
 };

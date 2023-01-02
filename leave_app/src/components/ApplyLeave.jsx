@@ -278,8 +278,13 @@ const ApplyLeave = () => {
   })
 
   return (
-    <div className="container">
-      {loading && <Loading />}
+    // <div className="container">
+    <div className="apply-leave">
+    <h2 className="page-heading"> Leave Application Form </h2>
+      <div className="apply-leave-section">
+      {loading 
+      ? <Loading />
+      : <>
       <Modal
         centered
         opened={!canTakeLeave}
@@ -356,7 +361,7 @@ const ApplyLeave = () => {
         </select>
 
         <label htmlFor="leave_duration"> Leave Duration: </label>
-        <RangeCalendar value={leaveDuration} onChange={setLeaveDuration} />
+        <RangeCalendar value={leaveDuration} onChange={setLeaveDuration} className="calendar"/>
 
         {showHalfDayApplication && 
         <div className="grid grid-template-4fr">  
@@ -370,7 +375,10 @@ const ApplyLeave = () => {
           required
         />
       </form>
-    </div>
+      </>
+  }
+  </div>
+  </div>
   );
 };
 
