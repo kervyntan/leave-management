@@ -285,6 +285,11 @@ select#month {
   margin-bottom : 20px;
 }
 
+.mantine-Checkbox-label {
+  color : var(--clr-black);
+  font-weight : 500;
+}
+
 
 /* Loading */
 .loading {
@@ -518,7 +523,9 @@ select#month {
 @media (hover: hover) {
   .mantine-RangeCalendar-day:hover,
   .mantine-RangeCalendar-calendarHeaderLevel:hover, 
-  .mantine-RangeCalendar-calendarHeaderControl:hover {
+  .mantine-RangeCalendar-calendarHeaderControl:hover, 
+  .mantine-RangeCalendar-monthPickerControl:hover,
+  .mantine-RangeCalendar-monthPickerControlActive {
     background-color: var(--clr-form-text) !important;
   } 
 }

@@ -15,6 +15,13 @@ import {
 } from "firebase/firestore";
 
 const Home = () => {
+  // Allow user to edit each of the values
+  // Then hit a "Save Changes" button on the bottom
+  // Then all the table data will be set to a local object
+  // Then updates all the documents of the database (find each document through a loop of the collection)
+  // create doc refs in each loop to each document based on name as ID
+
+
   // Edit individual values of the leaves in case user keys in wrongly
   // Need to populate all the diff kinds of leave first
   // then populate for each type of leave, how many does each staff have
