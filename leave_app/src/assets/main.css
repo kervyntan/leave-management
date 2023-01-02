@@ -165,6 +165,11 @@ button {
   cursor : pointer;
 }
 
+button:hover {
+  background : var(--clr-form-text);
+  color : var(--clr-white);
+}
+
 .nav > a {
     color : var(--clr-text);
     text-decoration : none;
