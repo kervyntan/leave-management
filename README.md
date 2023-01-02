@@ -1,5 +1,6 @@
-# leave-management
+# Leave Management Portal
  Leave Management Web App that integrates with Google Calendar API
+
 https://leave-management-adf7e.web.app/
 
 ✅View all staff and their different leaves available
@@ -9,3 +10,5 @@ https://leave-management-adf7e.web.app/
 ✅Add a staff member seamlessly
 
 ✅Check when during the month did a staff take leave as well as how many days they have taken.
+
+✅Able to take half day leave and full day leave
