@@ -150,6 +150,12 @@ input {
   margin-top: 10px;
   margin-bottom : 20px;
   background : var(--clr-light-bg);
+  color : var(--clr-black) !important;
+}
+
+/* For safari */
+select {
+  -webkit-appearance: none;
 }
 
 input {
