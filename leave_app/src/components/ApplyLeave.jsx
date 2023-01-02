@@ -18,13 +18,16 @@ import { gapi, CLIENT_ID, API_KEY, DISCOVERY_DOC, SCOPES } from "../gapi";
 const ApplyLeave = () => {
   // Allow for person to take one leave only (so scan the 1st index of the array)**
   // If it is null upon submission, then assume that end Date and start Date is the same
-
+  // 8.30am - 12.35pm
+  // 1.30pm - 5.35pm
   const reason = useRef("reason");
   const name = useRef("name");
   const leave = useRef("leave");
   const leave_structure = useRef("");
   let currentMonth = new Date().getMonth();
   let currentLeave = "";
+  // let dates = {}
+  const [datesObj, setDatesObj] = useState({}) 
   const colRefStaff = collection(db, "staff");
   const docRefLeaveTypes = doc(db, "showLeaveTypes", "showLeaveTypes");
   const [loading, setLoading] = useState(true);
@@ -51,19 +54,24 @@ const ApplyLeave = () => {
     // Assign startDate and endDate new values of chosen dates
     startDate = daysChosen[0].toISOString().split("T")[0];
     endDate = daysChosen[1].toISOString().split("T")[0];
-    let datesObj = {}
     const datesArr = dateCalculatorExcludeWeekendNoCurrentMonth(new Date(startDate), new Date(endDate))
-    datesArr.forEach((day) => {
+    datesArr.forEach((day, index) => {
       // Get date in terms of 1,2,... 28, 29, 30, 31
       const dayToDate = day.getDate()
       // Create object of options for the checkboxes
-      datesObj = {...datesObj, [dayToDate] : false }
+      // dates = {...dates, [dayToDate] : false }
+      // if (index === datesArr.length - 1) {
+      //   setDatesObj(dates);
+      // }
     })
+  
     halfDays = datesArr.map((day) => {
-      // console.log(day)
+        const date = day.getDate();
         return (
-          <Checkbox label={day.getDate()} checked={datesObj[day]} 
-          onChange={() => { datesObj = {...datesObj, [day] : !datesObj[day] }}}
+          <Checkbox label={date} checked={datesObj[date]} 
+          onClick={() => { 
+            setDatesObj({...datesObj, [date] : !datesObj[date] })
+          }}
           />
         )
     })
@@ -75,6 +83,10 @@ const ApplyLeave = () => {
     document.body.style.overflow = "unset";
   }
 
+  useEffect( () => {
+    console.log(datesObj)
+  }, [datesObj])
+   
   useEffect(() => {
     setTimeout(() => {
       getDocs(colRefStaff)
@@ -134,16 +146,32 @@ const ApplyLeave = () => {
         setInvalidDuration(true);
       } else {
     // staff name
+
     // Allows person to take leave on 1 day
       if (leaveDuration[1] === null) {
+        const day_taken = []
+        day_taken[0] = leaveDuration[0];
+        day_taken[0].setDate(day_taken[0].getDate() + 1);
+        startDate = day_taken[0].toISOString().split("T")[0];
         endDate = startDate;
       }
+      // keys for half day selection
+      const keysHalfDays = Object.keys(datesObj);
+      const numberOfHalfDays = [];
+      keysHalfDays.forEach( (date) => {
+        if (datesObj[date]) {
+          numberOfHalfDays.push(date);
+        }
+      })
       const staffName = name.current.value;
       const docRef = doc(db, "staff", staffName);
       // the type of leave they took
       const leaveType = (leave.current.value + "_leave").toLowerCase();
       // number of days taken/selected by the staff 
-      let days_taken = dateCalculatorExcludeWeekendNoCurrentMonth(new Date(startDate), new Date(endDate)).length;
+      let days_taken = 
+      dateCalculatorExcludeWeekendNoCurrentMonth(new Date(startDate), new Date(endDate)).length 
+      - (numberOfHalfDays.length * 0.5);
+
       getDoc(docRef).then((item) => {
         // Find the current amount of leave the person has
         currentLeave = parseInt(item.data()[leaveType])
@@ -174,8 +202,22 @@ const ApplyLeave = () => {
                 .signIn()
                 .then(() => {
                   const leaveTxt = "(Leave)"
+                  let whichHalfDays = "";
+                  if (keysHalfDays.length > 0) {
+                    keysHalfDays.forEach( (date, index) => {
+                      if (datesObj[date] && whichHalfDays === "") {
+                        whichHalfDays = whichHalfDays + `${date}`;
+                      } else if (datesObj[date]) {
+                        whichHalfDays = whichHalfDays + `,${date}`;
+                      }
+
+                      if (index === keysHalfDays.length - 1) {
+                        whichHalfDays = "- " + whichHalfDays + " on Half Day";
+                      }
+                    })
+                  }
                   let event = {
-                    summary: `${name.current.value}${leaveTxt} - ${reason.current.value}`,
+                    summary: `${name.current.value}${leaveTxt}${whichHalfDays}`,
                     description: `${leave.current.value}`,
                     start: {
                       dateTime: `${startDate}T00:00:00+08:00`,

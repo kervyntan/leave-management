@@ -159,10 +159,18 @@ const CheckStaffLeave = () => {
                 // Staff name
                 let staff = "";
                 let isStaff = -1;
+                let halfDaysUnformatted = ""
+                let halfDaysFormatted = []
                 // In case expired event doesn't contain summary key in the event object                
                 if (item.summary) {
                   staff = item.summary.split("(")[0]
-
+                  console.log(item.summary)
+                  if (item.summary.split("-").length > 1) {
+                    halfDaysUnformatted = item.summary.split("-")[1].split("on")[0].split(",")
+                    halfDaysFormatted = halfDaysUnformatted.map((item) => {
+                      return item.trim();
+                    })
+                  }
                 // check if the staff constant above is a part of current team/event crawled is not a leave event
                 // Returns -1 if false
                   isStaff = item.summary.search("Leave")
@@ -170,7 +178,9 @@ const CheckStaffLeave = () => {
                 // If staff event/leave doesn't exist
                 if(isStaff !== -1) {
                   // Can use break and continue 
+                  // const halfDaysFormatted = halfDaysUnformatted.map((date) => {
 
+                  // })
                   // Start and end Date
                   const startDate = (item.start.dateTime.split("T")[0].split(":"))[0];
                   const endDate = (item.end.dateTime.split("T")[0].split(":"))[0];
@@ -181,14 +191,19 @@ const CheckStaffLeave = () => {
                   let whichDays = "";
     
                   days_taken.forEach((item) => {
-                    if (whichDays === "") {
-                      whichDays = `${whichDays} ${item.getDate()}`
+                    if (whichDays === "" && halfDaysFormatted.find(val => val === `${item.getDate()}`)) {
+                      whichDays = `${whichDays} ${item.getDate()} (Half Day)`
+                    } else if (whichDays === "") {
+                      whichDays = `${whichDays} ${item.getDate()}`;
+                    } else if (halfDaysFormatted.find(val => val === `${item.getDate()}`)) {
+                      whichDays = `${whichDays}, ${item.getDate()} (Half Day)`
                     } else {
-                      whichDays = `${whichDays}, ${item.getDate()}`;
+                      whichDays = `${whichDays}, ${item.getDate()}`
                     }
                   })
                   // Number of days between endDay and startDay (excl weekends)
-                  const number_of_days_taken = days_taken.length;
+                  if (halfDaysFormatted[0] === "") { halfDaysFormatted = [] }
+                  const number_of_days_taken = days_taken.length - (halfDaysFormatted.length * 0.5);
     
                   // Check if the selected staff is equal to the one in the loop/check whether staff exists
                   if (selectRef.current.value === staff) {
@@ -235,8 +250,6 @@ const CheckStaffLeave = () => {
     })
     firstDate = getFirstAndLastDay(key)[0]
     lastDate = getFirstAndLastDay(key)[1]
-    console.log(firstDate)
-    console.log(lastDate)
     if (firstDate && lastDate) {
       handleGoogle()
     } else {
@@ -292,7 +305,7 @@ const CheckStaffLeave = () => {
         <tbody>
           <tr>
             <th> Number of leave(s) taken</th>
-            <th> Dates taken </th>
+            <th> Date(s) taken </th>
           </tr>
           {haveTakenLeave}
         </tbody>
