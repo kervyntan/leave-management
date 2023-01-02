@@ -147,7 +147,8 @@ input {
   padding : 10px 10px 10px 10px;
   border-radius : 5px;
   border : none;
-  margin-block : 10px;
+  margin-top: 10px;
+  margin-bottom : 20px;
   background : var(--clr-light-bg);
 }
 
@@ -179,29 +180,29 @@ button:hover {
 .mantine-RangeCalendar-calendarBase.mantine-1nw5k7j {
   background: #fff;
   border-radius: 6px;
+  margin-block : 20px;
 }
 
 .add-staff-form,
 .apply-leave-form {
     display : flex;
     flex-direction : column;
-    gap : 1em;
+    /* gap : 1em; */
 }
 
 .calendar {
+  max-width : 272px !important; 
   box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
   -webkit-box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
   -moz-box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.25);
 }
-/* 
-.mantine-y66xed {
-  font-family : 
-} */
 
 .mantine-Text-root.mantine-RangeCalendar-weekday.mantine-17ie1b8 {
   color : var(--clr-white) !important;
 }
-
+.mantine-RangeCalendar-cell {
+  width : 100%; 
+}
 .form-btn {
     width : fit-content;
     padding-inline : 20px;
@@ -469,10 +470,6 @@ select#month {
     background : var(--clr-form-text);
   }
 
-  .button-group {
-    text-align : center; 
-  }
-
   .staff td.column-1 {
     background : var(--clr-white);
   }
@@ -486,9 +483,42 @@ select#month {
 
   .container {
     padding-inline : 20px;
+    background-size : cover;
   }
 
   .nav {
     font-size: 0.8rem;
   }
+
+  .generate-pdf-btn {
+    margin-left : 20px ;
+    margin-bottom : 20px;
+  }
+
+  .button-group {
+    text-align : center;
+  }
+
+  .calendar {
+    margin-block : 20px;
+  }
+
+  .home,
+  .apply-leave,
+  .add-staff,
+  .check-staff,
+  .settings {
+    max-width : 100%;
+    margin : 0 auto; 
+  }
+
+
+}
+
+@media (hover: hover) {
+  .mantine-RangeCalendar-day:hover,
+  .mantine-RangeCalendar-calendarHeaderLevel:hover, 
+  .mantine-RangeCalendar-calendarHeaderControl:hover {
+    background-color: var(--clr-form-text) !important;
+  } 
 }
