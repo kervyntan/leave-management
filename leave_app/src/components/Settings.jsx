@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Button from "./Button"
 import Loading from './Loading';
 import { compareNames } from "../compareNames";
-import { Checkbox, Paper, Input, Text } from '@mantine/core';
+import { Checkbox, Paper, Input, Text, Modal } from '@mantine/core';
 import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -16,6 +16,9 @@ const Settings = () => {
     const docShowLeaveTypesRef = doc(db, "showLeaveTypes", "showLeaveTypes")
     const [loading, setLoading] = useState(true);
     const [checked, setChecked] = useState({});
+    const [openSaveModal, setOpenSaveModal] = useState(false);
+    const [openAddLeaveModal, setOpenAddLeaveModal] = useState(false);
+    const [openErrorModal, setOpenErrorModal] = useState(false);
     if (loading) {
         document.body.style.overflow = "hidden";
     } else {
@@ -33,17 +36,16 @@ const Settings = () => {
             });
     }, [])
 
-    useEffect ( () => {
-        console.log(checked)
-    }, [checked])
-
     const handleAddLeaveType = () => {
+        if (leaveToBeAdded.current.value === "") {
+            setOpenErrorModal(true);
+        }
         setDoc(docShowLeaveTypesRef, {
             [leaveToBeAdded.current.value] : true
         }, { merge: true })
             .then(() => {
-                console.log("Success")
-                window.location.reload()
+                setOpenAddLeaveModal(true);
+                window.location.reload();
             })
             .catch((error) => {
                 alert(error)
@@ -51,6 +53,7 @@ const Settings = () => {
     }
 
     const updateShowLeaveTypes = () => {
+        setOpenSaveModal(true);
         setDoc(docShowLeaveTypesRef, checked)
         .then( () => {
             console.log("Success")
@@ -79,6 +82,33 @@ const Settings = () => {
     return (
         <div className="settings">
             <h2 class="page-heading"> Settings </h2>
+
+            <Modal
+                centered
+                opened={openErrorModal}
+                onClose={() => setOpenErrorModal(false)}
+                title="Error adding leave type."
+            >
+                Input cannot be empty.
+            </Modal>
+
+            <Modal
+                centered
+                opened={openSaveModal}
+                onClose={() => setOpenSaveModal(false)}
+                title="Settings saved."
+            >
+                Click away to continue.
+            </Modal>
+
+            <Modal
+                centered
+                opened={openAddLeaveModal}
+                onClose={() => setOpenAddLeaveModal(false)}
+                title="Leave Type Added."
+            >
+                Please wait for the page to reload.
+            </Modal>
             {loading 
             ? <Loading /> 
             : <div className="settings-section">

@@ -182,7 +182,7 @@ const ApplyLeave = () => {
           } else {
             // load the auth
             gapi.load("client:auth2", () => {
-              console.log("Client loaded");
+              // console.log("Client loaded");
 
               // init with credentials
               gapi.client.init({
@@ -356,7 +356,6 @@ const ApplyLeave = () => {
           placeholder="Type of Leave: "
           required
         >
-          {/* Cannot hardcode */}
           {typesOfLeave}
         </select>
 
@@ -364,9 +363,12 @@ const ApplyLeave = () => {
         <RangeCalendar value={leaveDuration} onChange={setLeaveDuration} className="calendar"/>
 
         {showHalfDayApplication && 
-        <div className="grid grid-template-4fr">  
+        <>
+        <Text style={{marginBottom : "20px"}}> Select half days: </Text>
+        <div className="grid grid-template-4fr mb-20">  
           {halfDays}
         </div>
+        </>
         }
         <Button
           onClick={handleAddLeave}
