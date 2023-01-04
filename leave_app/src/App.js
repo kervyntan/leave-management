@@ -6,6 +6,7 @@ import AddStaff from "./components/AddStaff";
 import ApplyLeave from "./components/ApplyLeave";
 import CheckStaffLeave from "./components/CheckStaffLeave";
 import Settings from "./components/Settings";
+import EditStaff from "./components/EditStaff";
 
 function App() {
   
@@ -28,6 +29,7 @@ function App() {
         <Route path="/applyleave" element={<ApplyLeave />} />
         <Route path="/checkstaffleave" element={<CheckStaffLeave />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/editstaff" element={<EditStaff />} />
       </Routes>
     </div>
     </BrowserRouter>

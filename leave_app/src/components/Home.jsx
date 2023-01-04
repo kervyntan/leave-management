@@ -15,12 +15,9 @@ import {
 } from "firebase/firestore";
 
 const Home = () => {
-  // Allow user to edit each of the values
-  // Then hit a "Save Changes" button on the bottom
-  // Then all the table data will be set to a local object
-  // Then updates all the documents of the database (find each document through a loop of the collection)
-  // create doc refs in each loop to each document based on name as ID
-
+  // Populate each user and their number of leaves in a section below the table
+  // Allow for option to see individual staff or multiple/all staff members
+  // Upon editing and clicking save, page will reload and table will fetch new data
 
   // Edit individual values of the leaves in case user keys in wrongly
   // Need to populate all the diff kinds of leave first
@@ -34,6 +31,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [showDeleteText, setShowDeleteText] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([])
+  const [editable, setEditable] = useState(false)
+  const [editedValues, setEditedValues] = useState({})
   // const [leaveTypesFormatted, setLeaveTypesFormatted] = useState([])
   let leaveTypesFormatted = []
   const [staffKeys, setStaffKeys] = useState([])
@@ -119,9 +118,15 @@ const Home = () => {
     const staffData = staffKeys.map((item, index) => {
         return (
           <>
-            <td className={item}>
-              <p className={`${item}_para`}> {person[item]} </p>
-            </td>
+            {/* {editable 
+            ?  <input className="name_para" value="yay" /> */}
+             <td className={item}>
+              {editable 
+              ? <input className="name_para" value="yay" />
+              : <p className={`${item}_para`}> {person[item]} </p>
+              }
+             </td>
+            {/* } */}
           </>
         )
     })
@@ -146,7 +151,7 @@ const Home = () => {
         <>
           <tr key={Math.random} className="tr-staff odd">
             <td className="name column-1">
-              <div>
+            <div>
                 <p className="name_para">{person.name}</p>
               </div>
             </td>
@@ -174,7 +179,10 @@ const Home = () => {
       <th> {leave} </th>
     )
   })
-  
+
+  const makeEditable = () => {
+    setEditable(!editable);
+  }  
   // Need to dynamically show the leave 
 
   const generateExcel = () => {

@@ -41,7 +41,8 @@ blockquote {
 .apply-leave-section,
 .add-staff-section,
 .check-staff-section,
-.settings-section {
+.settings-section,
+.edit-staff-section {
   background : var(--clr-white);
   padding : 40px;
   border-radius : 40px;
@@ -480,7 +481,6 @@ select#month {
     display : block;
     width : 100%;
     overflow : scroll;
-    /* margin : 0 auto; */
   }
 
   .staff th.column-1 {
