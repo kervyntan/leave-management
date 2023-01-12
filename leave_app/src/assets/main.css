@@ -36,7 +36,6 @@ blockquote {
   background-repeat: no-repeat;
 }
 
-
 .table-section,
 .apply-leave-section,
 .add-staff-section,
@@ -121,6 +120,10 @@ th {
 
 .grid-template-4fr {
   grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-template-2fr {
+  grid-template-columns: 1fr 1fr;
 }
 
 .generate-excel-btn {

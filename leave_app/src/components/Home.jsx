@@ -66,7 +66,6 @@ const Home = () => {
           // Make sure each staff has every type of leave in the object
           // somehow populate all doc.data() with all the true leave types
 
-          // console.log(querySnapshot.size)
           querySnapshot.forEach((doc) => {
             // Compare keys of each doc.data() with those of the full list of leaveTypes
             // whichever ones are missing
